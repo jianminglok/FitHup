@@ -4,9 +4,11 @@ import { StyleSheet, View, Alert, SafeAreaView, Text } from "react-native";
 import { Button, Input } from "react-native-elements";
 import { ApiError, Session } from "@supabase/supabase-js";
 
-export default function Account(session) {
+export default function ProtectedView({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("")
+
+  const { session } = route.params;
 
   useEffect(() => {
     if (session) getProfile();
@@ -30,7 +32,7 @@ export default function Account(session) {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ marginLeft: 12, marginRight: 12 }}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Text>{email}</Text>
       </View>

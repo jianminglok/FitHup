@@ -31,7 +31,14 @@ export default function App() {
   return (
     <NavigationContainer>
       {session && session.user ?
-        <ProtectedView key={session.user.id} session={session} /> :
+        <Stack.Navigator>
+          <Stack.Screen
+            name="ProtectedView"
+            component={ProtectedView}
+            initialParams={{ session: session }}
+          />
+
+        </Stack.Navigator> :
         <Stack.Navigator>
           <Stack.Screen
             name="Login"

@@ -8,7 +8,7 @@ export default function SignIn({ navigation }) {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function signInWithEmail({ navigate }) {
+  async function signInWithEmail() {
     try {
       setLoading(true);
 
