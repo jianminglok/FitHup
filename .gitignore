@@ -9,7 +9,6 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 .env
-yarn.lock
 web-build/
 .expo-shared/
 
