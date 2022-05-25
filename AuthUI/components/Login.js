@@ -107,14 +107,7 @@ export default Login = ({navigation}) => {
 
         {/*Rememeber Me Field */}
         <View>
-          <Checkbox
-            color={colours.password}
-            style={styles.checkBox}
-            value={isChecked}
-            onValueChange={setChecked}
-          />
-
-          <Text style={styles.rmbme}>Rememeber Me</Text>
+          
           <TouchableOpacity onPress={() => navigation.navigate("Forgot Password")}>
             <Text style={styles.forgotpw}>Forgot Password?</Text>
           </TouchableOpacity>
