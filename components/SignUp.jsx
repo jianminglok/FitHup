@@ -8,8 +8,6 @@ import { Input } from "@rneui/themed";
 export default function SignUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-  const [dateOfBirth, setDateOfBirth] = useState(new Date())
   const [loading, setLoading] = useState(false)
 
   async function signUpWithEmail() {
@@ -19,11 +17,6 @@ export default function SignUp() {
       const { user, error } = await supabase.auth.signUp({
         email: email,
         password: password,
-      }, {
-        data: {
-          name: name,
-          dateofbirth: dateOfBirth.toISOString()
-        }
       });
 
       if (error) {
@@ -59,24 +52,6 @@ export default function SignUp() {
           secureTextEntry={true}
           placeholder="Password"
           autoCapitalize={'none'}
-        />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Name"
-          leftIcon={{ type: 'font-awesome', name: 'user' }}
-          onChangeText={setName}
-          value={name}
-          placeholder="Name"
-          autoCapitalize="words"
-        />
-      </View>
-      <View style={[styles.verticallySpaced, { marginLeft: 12, marginRight: 12 }]}>
-        <DateTimePicker
-          value={dateOfBirth}
-          mode={'date'}
-          is24Hour={true}
-          onChange={(event, selectedDate) => setDateOfBirth(selectedDate)}
         />
       </View>
       <View style={[styles.verticallySpaced, { marginLeft: 12, marginRight: 12 }]}>
