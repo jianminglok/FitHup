@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Checkbox from "expo-checkbox";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colours from "../assets/colours/colours";
 import { useFonts } from "expo-font";
