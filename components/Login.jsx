@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Alert,
+  Pressable,
   StatusBar,
   StyleSheet,
   Text,
@@ -102,7 +103,7 @@ export default Login = ({ navigation }) => {
             />
 
             {/* Eye icon */}
-            <TouchableOpacity
+            <TouchableOpacity    
               value={showPassword}
               onPress={() =>
                 showPassword ? setShowPassword(false) : setShowPassword(true)
@@ -110,11 +111,12 @@ export default Login = ({ navigation }) => {
             >
               <EyeIcon />
             </TouchableOpacity>
+            
           </View>
         </View>
 
         {/*Rememeber Me Field */}
-        <View>
+        <View >
           <TouchableOpacity onPress={() => navigation.navigate("Forgot Password")}>
             <Text style={styles.forgotpw}>Forgot Password?</Text>
           </TouchableOpacity>
@@ -122,16 +124,16 @@ export default Login = ({ navigation }) => {
 
         {/*Log in button*/}
 
-        <View style={[Style.loginOrSignUpButton, { marginTop: 130 }]}>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 130 , marginRight: 11}]}>
           <Button title={"Login"} onPress={signInWithEmail} />
         </View>
 
         {/*Create account */}
         <View>
-          <Text style={Style.account}>Don't have an account?</Text>
+          <Text style={[Style.account,{marginLeft:65}]}>Don't have an account?</Text>
 
           <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
-            <Text style={Style.signUpOrLogin}>Create one now</Text>
+            <Text style={[Style.signUpOrLogin, {marginLeft: 215}]}>Create one now</Text>
           </TouchableOpacity>
         </View>
       </View>

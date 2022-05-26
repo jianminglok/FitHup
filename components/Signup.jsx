@@ -157,7 +157,7 @@ export default Signup = ({navigation}) => {
 
                 {/*Sign up button*/}
 
-                <View style={[Style.loginOrSignUpButton, {marginTop : 92}]}>
+                <View style={[Style.loginOrSignUpButton, {marginTop : 70, marginRight: 27}]}>
                     <Button 
                         title = {"Sign Up"}
                         onPress = {() => signUpWithEmail()}
@@ -165,11 +165,11 @@ export default Signup = ({navigation}) => {
                 </View>
 
                 {/*Back to Login */}
-                <View>
-                    <Text style={[Style.account, {marginLeft: 75}]}>Already have an account?</Text>
+                <View >
+                    <Text style={[Style.account]}>Already have an account?</Text>
 
                     <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                        <Text style={[Style.signUpOrLogin, {marginLeft:245}]}>Log in</Text>
+                        <Text style={[Style.signUpOrLogin, {}]}>Log in</Text>
                     </TouchableOpacity>
                 </View>
 

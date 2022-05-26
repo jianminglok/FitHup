@@ -82,7 +82,7 @@ export default ForgotPassword = ({ navigation }) => {
 
         {/*Continue button*/}
 
-        <View style={[Style.loginOrSignUpButton, { marginTop: 130 }]}>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 130, marginRight: 11 }]}>
           <Button 
             title ={"Continue"}
             disabled = {loading}
@@ -92,12 +92,12 @@ export default ForgotPassword = ({ navigation }) => {
 
         {/*Back to Login */}
         <View>
-          <Text style={[Style.account, { marginLeft: 70 }]}>
+          <Text style={[Style.account, { marginLeft: 75,marginBottom :148 }]}>
             Remember your password?
           </Text>
 
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={[Style.signUpOrLogin, { marginLeft: 250 }]}>
+            <Text style={[Style.signUpOrLogin, { marginLeft: 255 }]}>
               Log in
             </Text>
           </TouchableOpacity>

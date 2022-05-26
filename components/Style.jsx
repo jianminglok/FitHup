@@ -1,4 +1,3 @@
-
 import {
   StatusBar,
   StyleSheet,
@@ -47,6 +46,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginTop: 6,
     marginLeft: 27,
+    justifyContent : 'center'
+    
   },
 
   sampleEmail: {
@@ -54,13 +55,13 @@ const styles = StyleSheet.create({
     fontFamily: "RobotoRegular",
     fontSize: 14,
     marginLeft: 54,
-    marginTop: 8,
+    
   },
 
   icon: {
     marginLeft: 19,
-    marginTop: 7,
     position: "absolute",
+    
   },
 
   password: {
@@ -77,12 +78,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     position: "absolute",
     marginLeft: 54,
-    marginTop: 8,
   },
 
   eye: {
-    marginTop: 9,
+    position : 'absolute',
     marginLeft: 273,
+    marginTop : -13
+    
+    
+
+    
   },
 
   loginOrSignUpText: {
@@ -96,28 +101,33 @@ const styles = StyleSheet.create({
     color: colours.noAccount,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    marginLeft: 65,
-    marginTop: 24,
-    position: "absolute",
+    marginLeft: 80,
+    marginTop: 15,
+    position : 'absolute'
+    
   },
 
   signUpOrLogin: {
     color: colours.text,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    marginLeft: 215,
-    marginTop: 24,
-    position: "absolute",
+    marginLeft :250,
+    marginTop: 15,
+    position : 'absolute'
+
+    
   },
 
   loginOrSignUpButton: {
     backgroundColor: colours.button,
-    marginLeft: 27,
+    
     borderRadius: 14,
     width: 321,
     height: 45,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf : 'center',
+    
   },
 });
 

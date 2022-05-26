@@ -20,16 +20,18 @@ export default LaunchPage = ({ navigation }) => {
       />
 
       <Text style={styles.name}>FitHup</Text>
+      <View style = {{}}>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 10, }]}>
+          <Button title={"Login"} onPress={() => navigation.navigate("Login")} />
+        </View>
 
-      <View style={[Style.loginOrSignUpButton, { marginTop: 15 }]}>
-        <Button title={"Login"} onPress={() => navigation.navigate("Login")} />
-      </View>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 20, marginBottom: 20, }]}>
+          <Button
+            title={"Sign Up"}
+            onPress={() => navigation.navigate("Sign Up")}
+          />
+        </View>
 
-      <View style={[Style.loginOrSignUpButton, { marginTop: 23 }]}>
-        <Button
-          title={"Sign Up"}
-          onPress={() => navigation.navigate("Sign Up")}
-        />
       </View>
     </View>
   );
@@ -39,20 +41,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colours.background,
+    
   },
 
   launchImage: {
     width: 470,
-    height: 631 - StatusBar.currentHeight,
+    height: 631 ,
     opacity: 0.3,
+    flex : 631 + StatusBar.currentHeight/812
   },
 
   name: {
     color: colours.text,
     fontFamily: "ZenDots",
     fontSize: 48,
-    position: "absolute",
+    justifyContent : 'center',
+    position : 'absolute',
+    alignSelf : 'center',
     marginTop: 105,
-    marginLeft: 100,
+    
   },
 });
