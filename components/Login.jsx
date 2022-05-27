@@ -148,16 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "absolute",
   },
-
-  rmbme: {
-    color: colours.text,
-    fontFamily: "RobotoRegular",
-    fontSize: 12,
-    marginLeft: 53,
-    marginTop: 27,
-    position: "absolute",
-  },
-
+  
   forgotpw: {
     position: "absolute",
     color: colours.password,
