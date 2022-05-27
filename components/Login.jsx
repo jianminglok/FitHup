@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Alert,
   Pressable,
@@ -18,13 +18,16 @@ import LockIcon from "./LockIcon";
 import EyeIcon from "./EyeIcon";
 import Button from "./Button";
 import { supabase } from '../lib/supabase'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default Login = ({ navigation }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   /*Eye icon*/
   const [showPassword, setShowPassword] = useState(false);
+
+  const passwordInput = useRef();
 
   const [loaded] = useFonts({
     RobotoMedium: require("../assets/fonts/Roboto-Medium.ttf"),
@@ -51,7 +54,7 @@ export default Login = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   if (!loaded) {
     return null;
@@ -62,11 +65,15 @@ export default Login = ({ navigation }) => {
       <StatusBar />
       {/* Header */}
       <SafeAreaView style={Style.header}>
-        <Text style={Style.headerText}>Welcome {"\n"}Back!</Text>
+        <Text adjustsFontSizeToFit style={Style.headerText}>Welcome {"\n"}Back!</Text>
       </SafeAreaView>
 
       {/*Body */}
-      <View style={Style.body}>
+      <KeyboardAwareScrollView 
+        style={Style.body} 
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        scrollEnabled={true} 
+        contentContainerStyle={{flexGrow: 1}} >
         {/*Email Field */}
         <View>
           <Text style={Style.email}>Email address</Text>
@@ -82,6 +89,9 @@ export default Login = ({ navigation }) => {
               placeholderTextColor={colours.text}
               onChangeText={setEmail}
               autoComplete="email"
+              autoCapitalize="none"
+              onSubmitEditing={() => { passwordInput.current.focus(); }}
+              returnKeyType="next"
             />
           </View>
         </View>
@@ -100,10 +110,11 @@ export default Login = ({ navigation }) => {
               placeholderTextColor={colours.text}
               secureTextEntry={!showPassword}
               onChangeText={setPassword}
+              ref={passwordInput}
             />
 
             {/* Eye icon */}
-            <TouchableOpacity    
+            <TouchableOpacity
               value={showPassword}
               onPress={() =>
                 showPassword ? setShowPassword(false) : setShowPassword(true)
@@ -111,7 +122,7 @@ export default Login = ({ navigation }) => {
             >
               <EyeIcon />
             </TouchableOpacity>
-            
+
           </View>
         </View>
 
@@ -122,21 +133,23 @@ export default Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/*Log in button*/}
+        <View style={[Style.loginOrSignUpButtonContainer]}>
+          {/*Log in button*/}
+          <View style={[Style.loginOrSignUpButton]}>
+            <Button title={"Login"} onPress={signInWithEmail} />
+          </View>
 
-        <View style={[Style.loginOrSignUpButton, { marginTop: 130 , marginRight: 11}]}>
-          <Button title={"Login"} onPress={signInWithEmail} />
+          {/*Create account */}
+          <View style={Style.signUpOrLoginContainer}>
+            <Text style={[Style.account]}>Don't have an account?</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
+              <Text style={[Style.signUpOrLogin]}>Create one now</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/*Create account */}
-        <View>
-          <Text style={[Style.account,{marginLeft:65}]}>Don't have an account?</Text>
-
-          <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
-            <Text style={[Style.signUpOrLogin, {marginLeft: 215}]}>Create one now</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
@@ -148,13 +161,13 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "absolute",
   },
-  
+
   forgotpw: {
-    position: "absolute",
     color: colours.password,
     fontFamily: "RobotoMedium",
     fontSize: 12,
-    marginLeft: 250,
     marginTop: 27,
+    marginRight: 27,
+    alignSelf: "flex-end"
   },
 });

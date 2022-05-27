@@ -4,7 +4,6 @@ import colours from "../assets/colours/colours";
 import Style from "./Style";
 
 export default LockIcon = () => {
-
     return(      
         <Feather
             name="lock"
@@ -12,6 +11,5 @@ export default LockIcon = () => {
             color={colours.text}
             style={Style.icon}
         />
-
     );
 };

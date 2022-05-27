@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
 
   header: {
     flex: 186 / 626,
-    marginTop: StatusBar.currentHeight,
+    marginVertical: StatusBar.currentHeight,
+    justifyContent: 'center'
   },
 
   headerText: {
@@ -22,7 +23,6 @@ const styles = StyleSheet.create({
     fontFamily: "MontserratBold",
     fontSize: 40,
     marginLeft: 27,
-    marginBottom: 38,
   },
 
   body: {
@@ -35,33 +35,31 @@ const styles = StyleSheet.create({
     color: colours.text,
     fontFamily: "RobotoRegular",
     fontSize: 12,
-    marginTop: 86,
     marginLeft: 27,
+    marginTop: 50,
   },
 
   rect: {
     backgroundColor: colours.tab,
-    width: 321,
     height: 45,
     borderRadius: 14,
     marginTop: 6,
-    marginLeft: 27,
-    justifyContent : 'center'
-    
+    marginHorizontal: 27,
+    justifyContent : 'center',
+    alignItems: 'center',
+    flexDirection: "row"
   },
 
   sampleEmail: {
     color: colours.text,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    marginLeft: 54,
-    
+    marginLeft: 19,
+    flex: 1,
   },
 
   icon: {
     marginLeft: 19,
-    position: "absolute",
-    
   },
 
   password: {
@@ -76,58 +74,54 @@ const styles = StyleSheet.create({
     color: colours.text,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    position: "absolute",
-    marginLeft: 54,
+    marginLeft: 19,
+    flex: 1
   },
 
   eye: {
-    position : 'absolute',
-    marginLeft: 273,
-    marginTop : -13
-    
-    
-
-    
+    marginRight: 19
   },
 
   loginOrSignUpText: {
     color: colours.text,
     fontFamily: "RobotoMedium",
     fontSize: 16,
-    
+  },
+
+  signUpOrLoginContainer: {
+    marginTop: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 
   account: {
     color: colours.noAccount,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    marginLeft: 80,
-    marginTop: 15,
-    position : 'absolute'
-    
   },
 
   signUpOrLogin: {
     color: colours.text,
     fontFamily: "RobotoRegular",
     fontSize: 14,
-    marginLeft :250,
-    marginTop: 15,
-    position : 'absolute'
+    marginLeft: 5
+  },
 
-    
+  loginOrSignUpButtonContainer: {
+    justifyContent: "flex-end",
+    flex: 1,
+    marginTop: 27,
+    marginBottom: 50,
   },
 
   loginOrSignUpButton: {
     backgroundColor: colours.button,
-    
     borderRadius: 14,
-    width: 321,
     height: 45,
+    marginHorizontal: 27,
     alignItems: "center",
     justifyContent: "center",
-    alignSelf : 'center',
-    
   },
 });
 

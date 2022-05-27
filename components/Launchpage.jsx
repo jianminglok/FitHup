@@ -51,7 +51,7 @@ export default function Launchpage({ navigation }) {
 
       <Text style={styles.name}>FitHup</Text>
       <View style={{}}>
-        <View style={[Style.loginOrSignUpButton, { marginTop: 10, }]}>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 10 }]}>
           <Button title={"Login"} onPress={() => navigation.navigate("Login")} />
         </View>
 

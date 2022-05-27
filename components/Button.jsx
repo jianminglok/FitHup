@@ -7,7 +7,7 @@ export default Button = (props) => {
   const { title, onPress, disabled } = props;
   return (
     <Pressable
-      disabled = {disabled}
+      disabled={disabled}
       onPress={onPress}
       android_ripple={{
         color: colours.text,
