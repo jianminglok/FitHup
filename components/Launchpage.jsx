@@ -15,11 +15,11 @@ export default function Launchpage({ navigation }) {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
+    // Prepare to load custom fonts
     async function prepare() {
       try {
         await SplashScreen.preventAutoHideAsync();
         await Font.loadAsync(customFonts);
-        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.warn(error);
       } finally {
@@ -30,6 +30,7 @@ export default function Launchpage({ navigation }) {
     prepare();
   }, []);
 
+  // Display splash screen while 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colours.background,
-
   },
 
   launchImage: {

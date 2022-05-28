@@ -1,10 +1,12 @@
 import {
   StatusBar,
   StyleSheet,
-  
+
 } from "react-native";
 import colours from "../assets/colours/colours";
+import { Dimensions } from "react-native";
 
+var fullWidth = Dimensions.get('window').width; //full width
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginTop: 6,
     marginHorizontal: 27,
-    justifyContent : 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: "row"
   },
@@ -122,6 +124,85 @@ const styles = StyleSheet.create({
     marginHorizontal: 27,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  topBar: {
+    flexDirection: "row",
+    marginVertical: StatusBar.currentHeight,
+    marginHorizontal: 19,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  topBarProfileIcon: {
+    height: 32,
+    width: 32,
+    justifyContent: "flex-end"
+  },
+
+  topBarUsernameText: {
+    fontSize: 24,
+    fontFamily: "RobotoMedium",
+    fontWeight: "500",
+    color: "rgba(255, 255, 255, 1)",
+    textAlign: "center",
+    justifyContent: "center",
+    flex: 1
+  },
+
+  homepageContainer: {
+    flex: 1,
+    backgroundColor: colours.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: "column",
+  },
+
+  homepageScrollview: {
+    flex: 1,
+    margin: 0
+  },
+
+  card: {
+    borderRadius: 20,
+    backgroundColor: "rgba(42,42,42,1)",
+    shadowColor: "rgba(0,0,0,0.25)",
+    elevation: 0,
+    shadowOffset: { width: 0, height: 4 },
+    width: fullWidth - 38,
+    alignSelf: 'baseline',
+    flexDirection: 'row'
+  },
+
+  cardBody: {
+    margin: 19
+  },
+
+  cardTitle: {
+    fontSize: 24,
+    fontFamily: "MontserratBold",
+    fontWeight: "700",
+    color: colours.text,
+  },
+
+  cardDescription: {
+    fontFamily: "RobotoRegular",
+    fontSize: 16,
+    color: colours.text,
+    marginLeft: 5,
+  },
+
+  cardDescriptionBold: {
+      fontFamily: "RobotoMedium",
+      fontSize: 16,
+      color: colours.text,
+  },
+
+  cardDescriptionContainer: {
+      marginVertical: 15,
+      alignItems: 'center',
+      flexDirection: 'row',
+      flex: 1
   },
 });
 

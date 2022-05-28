@@ -15,7 +15,7 @@ import { useFonts } from "expo-font";
 import Style from "./Style";
 import MailIcon from "./MailIcon";
 import LockIcon from "./LockIcon";
-import EyeIcon from "./EyeIcon";
+import EyeIcon from "./MailIcon";
 import Button from "./Button";
 import { supabase } from '../lib/supabase'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'

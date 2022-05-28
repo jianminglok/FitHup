@@ -7,6 +7,7 @@ import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import Launchpage from './components/Launchpage';
 import Homepage from './components/Homepage';
+import BottomBar from './components/BottomBar';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,10 +33,12 @@ export default function App() {
       {session && session.user ?
         <Stack.Navigator>
           <Stack.Screen
-            name="Homepage"
-            component={Homepage}
+            name="TabStack"
+            component={BottomBar}
+            options={{
+              headerShown: false,
+            }}
           />
-
         </Stack.Navigator> :
         <Stack.Navigator>
           <Stack.Screen
