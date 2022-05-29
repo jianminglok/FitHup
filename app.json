@@ -21,9 +21,11 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.FitHup.FitHup",
+      "versionCode" : 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/images/App_icon.png",
+        "backgroundColor": "#000000"
       }
     },
     "web": {
