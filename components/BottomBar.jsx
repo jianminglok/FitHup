@@ -1,12 +1,20 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import colours from '../assets/colours/colours';
 import Feather from "react-native-vector-icons/Feather";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
+import React, { useState, useCallback, useEffect } from "react"
+import { Image } from 'react-native';
+
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomBar() {
+
+  const [appIsReady, setAppIsReady] = useState(false);
+
+   
     return (
       <Tab.Navigator
         screenOptions={{
@@ -22,9 +30,9 @@ export default function BottomBar() {
           options={{
             headerShown: false,
             tabBarIcon: ({ focused }) => (
-              <Feather
-                name="bar-chart-2"
-                size={25}
+              <Image
+                source = {require("../assets/images/Leaderboard.png")}
+                style = {{width:30, height: 30,marginTop :10}}
                 color={colours.text}
               />
             )
@@ -34,9 +42,9 @@ export default function BottomBar() {
           component={Homepage}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Feather
-                name="x-square"
-                size={25}
+              <Image
+                source={require("../assets/images/Calorie.png")}
+                style ={{width:23, height:23, resizeMode: 'contain'}}
                 color={colours.text}
               />
             )
@@ -47,7 +55,7 @@ export default function BottomBar() {
           options={{
             tabBarIcon: ({ focused }) => (
               <Feather
-                name="plus"
+                name = "plus"
                 size={50}
                 color={colours.text}
               />
@@ -61,9 +69,9 @@ export default function BottomBar() {
           component={Homepage}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Feather
-                name="x-square"
-                size={25}
+              <FontAwesome5
+                name="dumbbell"
+                size={20}
                 color={colours.text}
               />
             )
