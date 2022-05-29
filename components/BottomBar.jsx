@@ -9,11 +9,12 @@ const Tab = createBottomTabNavigator();
 export default function BottomBar() {
     return (
       <Tab.Navigator
-        tabBarOptions={{
-          showLabel: false,
-        }}
         screenOptions={{
-          tabBarStyle: { backgroundColor: colours.background, },
+          tabBarShowLabel: false,
+          tabBarStyle: { 
+            backgroundColor: colours.background, 
+            display: "flex" 
+          },
         }}>
         <Tab.Screen
           name="Leaderboard"

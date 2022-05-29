@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase'
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useState, useCallback, useEffect, useRef } from "react"
 import AppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -35,8 +35,10 @@ let customFonts = {
 
 export default function Homepage() {
     const [appIsReady, setAppIsReady] = useState(false);
+    const mounted = useRef(false);
 
     useEffect(() => {
+        mounted.current = true;
         // Prepare to load custom fonts
         async function prepare() {
             try {
@@ -45,11 +47,15 @@ export default function Homepage() {
             } catch (error) {
                 console.warn(error);
             } finally {
-                setAppIsReady(true);
+                if (mounted.current != false) {
+                    setAppIsReady(true);
+                }
             }
         }
 
         prepare();
+
+        return () => { mounted.current = false; };
     }, []);
 
     // Display splash screen while 

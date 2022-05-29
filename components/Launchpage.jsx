@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
 import colours from "../assets/colours/colours";
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,8 +13,14 @@ let customFonts = {
 
 export default function Launchpage({ navigation }) {
   const [appIsReady, setAppIsReady] = useState(false);
+  const mounted = useRef(false);
+
+  state = {
+    fontsLoaded: false
+  }
 
   useEffect(() => {
+    mounted.current = true;
     // Prepare to load custom fonts
     async function prepare() {
       try {
@@ -23,11 +29,15 @@ export default function Launchpage({ navigation }) {
       } catch (error) {
         console.warn(error);
       } finally {
-        setAppIsReady(true);
+        if (mounted.current != false) {
+          setAppIsReady(true);
+        }
       }
     }
 
     prepare();
+
+    return () => { mounted.current = false; };
   }, []);
 
   // Display splash screen while 
