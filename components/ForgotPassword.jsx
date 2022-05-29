@@ -14,6 +14,7 @@ import colours from "../assets/colours/colours";
 import { useFonts } from "expo-font";
 import Style from "./Style";
 import MailIcon from "./MailIcon";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default ForgotPassword = ({ navigation }) => {
   const [loaded] = useFonts({
@@ -27,7 +28,7 @@ export default ForgotPassword = ({ navigation }) => {
   }
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false)
-  
+
   async function sendResetEmail() {
     try {
       setLoading(true)
@@ -38,7 +39,7 @@ export default ForgotPassword = ({ navigation }) => {
       if (error) {
         throw error
       } else if (data) {
-          Alert.alert("Password reset email sent successfully");
+        Alert.alert("Password reset email sent successfully");
       }
     } catch (error) {
       Alert.alert(error.message);
@@ -52,11 +53,15 @@ export default ForgotPassword = ({ navigation }) => {
       <StatusBar />
       {/* Header */}
       <SafeAreaView style={Style.header}>
-        <Text style={Style.headerText}>Forgot{"\n"}Password?</Text>
+        <Text adjustsFontSizeToFit style={Style.headerText}>Forgot{"\n"}Password?</Text>
       </SafeAreaView>
 
       {/*Body */}
-      <View style={Style.body}>
+      <KeyboardAwareScrollView 
+        style={Style.body} 
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        scrollEnabled={true} 
+        contentContainerStyle={{flexGrow: 1}} >
         {/*Email Field */}
         <View>
           <Text style={Style.email}>Email address</Text>
@@ -64,14 +69,15 @@ export default ForgotPassword = ({ navigation }) => {
           {/* Email Rectangle */}
           <View style={Style.rect}>
             {/* Mail icon */}
-            <MailIcon/>
+            <MailIcon />
             <TextInput
               style={Style.sampleEmail}
               placeholder="Enter your email"
               placeholderTextColor={colours.text}
-              value = {email}
+              value={email}
               onChangeText={(email) => setEmail(email)}
               autoComplete="email"
+              autoCapitalize="none"
             />
           </View>
 
@@ -80,29 +86,30 @@ export default ForgotPassword = ({ navigation }) => {
           </Text>
         </View>
 
-        {/*Continue button*/}
+        <View style={[Style.loginOrSignUpButtonContainer]}>
+          {/*Continue button*/}
+          <View style={[Style.loginOrSignUpButton]}>
+            <Button
+              title={"Continue"}
+              disabled={loading}
+              onPress={() => sendResetEmail()}
+            />
+          </View>
 
-        <View style={[Style.loginOrSignUpButton, { marginTop: 130, marginRight: 11 }]}>
-          <Button 
-            title ={"Continue"}
-            disabled = {loading}
-            onPress = {() => sendResetEmail()}
-          />
-        </View>
-
-        {/*Back to Login */}
-        <View>
-          <Text style={[Style.account, { marginLeft: 75,marginBottom :148 }]}>
-            Remember your password?
-          </Text>
-
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={[Style.signUpOrLogin, { marginLeft: 255 }]}>
-              Log in
+          {/*Back to Login */}
+          <View style={Style.signUpOrLoginContainer}>
+            <Text style={[Style.account]}>
+              Remember your password?
             </Text>
-          </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={[Style.signUpOrLogin]}>
+                Log in
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 };

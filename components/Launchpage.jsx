@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
 import colours from "../assets/colours/colours";
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,23 +13,34 @@ let customFonts = {
 
 export default function Launchpage({ navigation }) {
   const [appIsReady, setAppIsReady] = useState(false);
+  const mounted = useRef(false);
+
+  state = {
+    fontsLoaded: false
+  }
 
   useEffect(() => {
+    mounted.current = true;
+    // Prepare to load custom fonts
     async function prepare() {
       try {
         await SplashScreen.preventAutoHideAsync();
         await Font.loadAsync(customFonts);
-        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.warn(error);
       } finally {
-        setAppIsReady(true);
+        if (mounted.current != false) {
+          setAppIsReady(true);
+        }
       }
     }
 
     prepare();
+
+    return () => { mounted.current = false; };
   }, []);
 
+  // Display splash screen while 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
@@ -51,7 +62,7 @@ export default function Launchpage({ navigation }) {
 
       <Text style={styles.name}>FitHup</Text>
       <View style={{}}>
-        <View style={[Style.loginOrSignUpButton, { marginTop: 10, }]}>
+        <View style={[Style.loginOrSignUpButton, { marginTop: 10 }]}>
           <Button title={"Login"} onPress={() => navigation.navigate("Login")} />
         </View>
 
@@ -71,7 +82,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colours.background,
-
   },
 
   launchImage: {

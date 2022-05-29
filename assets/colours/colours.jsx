@@ -4,7 +4,9 @@ const colours = {
   text: "#FFFFFF",
   password: "#EE0202",
   button : '#FF4D7D',
-  noAccount : '#94A3B8'
+  noAccount : '#94A3B8',
+  orange : '#FFA132',
+  red : '#FF666F'
 };
 
 export default colours;
