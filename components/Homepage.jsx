@@ -13,6 +13,7 @@ import disc from '@jsamr/counter-style/presets/disc';
 import MarkedList from '@jsamr/react-native-li';
 import Style from './Style';
 import Card from './Card';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 var fullWidth = Dimensions.get('window').width; //full width
 
@@ -70,6 +71,12 @@ export default function Homepage() {
 
             <ScrollView style={Style.homepageScrollview}>
                 <Card cardTitle="Exercises">
+                    <FontAwesome5
+                        name = 'dumbbell'
+                        size= {30}
+                        style = {{transform:[{rotateZ: '25deg'}], position: 'absolute', alignSelf:'center'}}
+                        color={colours.orange}
+                    />
                     <View style={Style.cardDescriptionContainer}>
                         <Text style={[Style.cardDescriptionBold]}>4000 calories</Text>
                         <Text style={[Style.cardDescription]}>to target</Text>
@@ -110,6 +117,11 @@ export default function Homepage() {
                 </Card>
 
                 <Card cardTitle="Calories" style={{ marginVertical: 19 }}>
+                    <Image
+                        source={require("../assets/images/Calorie_red.png")}
+                        style ={{width:40, height:40, alignSelf:'center', position:'absolute', resizeMode: 'contain'}}
+                        
+                    />  
                     <View style={Style.cardDescriptionContainer}>
                         <Text style={[Style.cardDescriptionBold]}>1000 calories</Text>
                         <Text style={[Style.cardDescription]}>to target</Text>
@@ -192,28 +204,28 @@ const styles = StyleSheet.create({
         fontSize: 45,
         fontFamily: "MontserratBold",
         fontWeight: "700",
-        color: '#FB9825',
+        color: colours.orange,
     },
 
     exerciseCalText: {
         fontSize: 22,
         fontFamily: "MontserratBold",
         fontWeight: "700",
-        color: '#FB9825',
+        color: colours.orange,
     },
 
     dietCalCount: {
         fontSize: 45,
         fontFamily: "MontserratBold",
         fontWeight: "700",
-        color: '#FB4A54',
+        color: colours.red,
     },
 
     dietCalText: {
         fontSize: 22,
         fontFamily: "MontserratBold",
         fontWeight: "700",
-        color: '#FB4A54',
+        color: colours.red,
     },
 
     recommendationTitle: {
