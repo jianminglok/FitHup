@@ -11,7 +11,7 @@ let customFonts = {
   'ZenDots': require("../assets/fonts/ZenDots-Regular.ttf"),
 };
 
-export default function Launchpage({ navigation }) {
+export default function Launchpage({ session, navigation }) {
   const [appIsReady, setAppIsReady] = useState(false);
   const mounted = useRef(false);
 

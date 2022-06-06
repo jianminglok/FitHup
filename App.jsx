@@ -7,7 +7,9 @@ import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import Launchpage from './components/Launchpage';
 import Homepage from './components/Homepage';
+import SetupProfile from './components/SetupProfile';
 import BottomBar from './components/BottomBar';
+import 'react-native-url-polyfill/auto'
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +37,13 @@ export default function App() {
           <Stack.Screen
             name="TabStack"
             component={BottomBar}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="SetupProfile"
+            component={SetupProfile}
             options={{
               headerShown: false,
             }}

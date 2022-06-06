@@ -204,6 +204,51 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       flex: 1
   },
+
+  profileContainer: {
+    flex: 1,
+    backgroundColor: colours.background,
+  },
+
+  profileHeight: {
+    backgroundColor: colours.tab,
+    height: 45,
+    borderRadius: 14,
+    marginTop: 6,
+    marginLeft: 27,
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: "row"
+  },
+
+  profileWeight: {
+    backgroundColor: colours.tab,
+    height: 45,
+    borderRadius: 14,
+    marginTop: 6,
+    marginLeft: 5,
+    marginRight: 27,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: "row"
+  },
+
+  profileWeightLabel: {
+    color: colours.text,
+    fontFamily: "RobotoRegular",
+    fontSize: 12,
+    marginTop: 12,
+    marginLeft: 5,
+  },
+
+  profileDateOfBirth: {
+    color: colours.text,
+    fontFamily: "RobotoRegular",
+    fontSize: 14,
+    marginLeft: 19,
+    flex: 1,
+  },
 });
 
 export default styles;
