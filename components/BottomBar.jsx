@@ -6,6 +6,7 @@ import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
 import { Image } from 'react-native';
+import SetupProfile from './SetupProfile';
 
 
 const Tab = createBottomTabNavigator();
@@ -23,12 +24,24 @@ export default function BottomBar() {
             backgroundColor: colours.background, 
             display: "flex" 
           },
-        }}>
+        }}
+        
+        
+        >
+  
+        {/* <Tab.Screen
+          name="Homepage"
+          component={Homepage}
+          options={{
+            headerShown: false,
+            
+          }} /> */}
         <Tab.Screen
           name="Leaderboard"
           component={Homepage}
           options={{
-            headerShown: false,
+            //headerShown: false,
+            
             tabBarIcon: ({ focused }) => (
               <Image
                 source = {require("../assets/images/Leaderboard.png")}

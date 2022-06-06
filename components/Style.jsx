@@ -204,6 +204,15 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       flex: 1
   },
+
+  profileContainer : {
+    flex : 1,
+    backgroundColor : colours.background,
+    
+
+
+  }
+
 });
 
 export default styles;

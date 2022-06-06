@@ -8,6 +8,7 @@ import ForgotPassword from './components/ForgotPassword';
 import Launchpage from './components/Launchpage';
 import Homepage from './components/Homepage';
 import BottomBar from './components/BottomBar';
+import SetupProfile from './components/SetupProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +32,17 @@ export default function App() {
   return (
     <NavigationContainer>
       {session && session.user ?
-        <Stack.Navigator>
+      
+      <Stack.Navigator>
+          
+              
+          <Stack.Screen
+            name="Set up Profile"
+            component={SetupProfile}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen
             name="TabStack"
             component={BottomBar}
@@ -40,6 +51,7 @@ export default function App() {
             }}
           />
         </Stack.Navigator> :
+
         <Stack.Navigator>
           <Stack.Screen
             name="Launchpage"
