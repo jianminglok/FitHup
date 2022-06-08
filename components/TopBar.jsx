@@ -3,17 +3,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MenuIcon from "./MenuIcon";
 import Style from './Style';
 
-
-export default TopBar = ({navigation}) => {
+export default function TopBar({ navigation }) {
     return (
         <SafeAreaView style={Style.topBar}>
             <TouchableOpacity>
                 <MenuIcon />
             </TouchableOpacity>
             <Text style={Style.topBarUsernameText}>User Name</Text>
-            <TouchableOpacity
-                //onPress={() => navigation.navigate("Set up Profile")}
-            >
+            <TouchableOpacity onPress={() => navigation.navigate("SetupProfile")}>
                 <Image
                     style={Style.topBarProfileIcon}
                     source={{

@@ -34,7 +34,7 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function Homepage() {
+export default function Homepage({ navigation }) {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
 
@@ -73,7 +73,7 @@ export default function Homepage() {
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar />
+            <TopBar navigation={navigation} />
 
             <ScrollView style={Style.homepageScrollview}>
                 <Card cardTitle="Exercises">

@@ -6,7 +6,9 @@ const colours = {
   button : '#FF4D7D',
   noAccount : '#94A3B8',
   orange : '#FFA132',
-  red : '#FF666F'
+  red : '#FF666F',
+  SHUTTLE_GREY: '#565E67',
+  ALTO: '#dfdfdf',
 };
 
 export default colours;
