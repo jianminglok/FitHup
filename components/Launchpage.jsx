@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Image, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StatusBar, StyleSheet, Text, View } from "react-native";
 import colours from "../assets/colours/colours";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
@@ -11,8 +11,9 @@ let customFonts = {
   'ZenDots': require("../assets/fonts/ZenDots-Regular.ttf"),
 };
 
-export default function Launchpage({ navigation }) {
+export default function Launchpage({ session, navigation }) {
   const [appIsReady, setAppIsReady] = useState(false);
+  const [loading, setLoading] = useState(false);
   const mounted = useRef(false);
 
   state = {

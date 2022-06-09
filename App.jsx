@@ -7,12 +7,15 @@ import Signup from './components/Signup';
 import ForgotPassword from './components/ForgotPassword';
 import Launchpage from './components/Launchpage';
 import Homepage from './components/Homepage';
+import SetupProfile from './components/SetupProfile';
 import BottomBar from './components/BottomBar';
+import 'react-native-url-polyfill/auto'
+import { Alert } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     let isMounted = true
@@ -31,6 +34,7 @@ export default function App() {
   return (
     <NavigationContainer>
       {session && session.user ?
+
         <Stack.Navigator>
           <Stack.Screen
             name="TabStack"
@@ -39,7 +43,15 @@ export default function App() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="SetupProfile"
+            component={SetupProfile}
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack.Navigator> :
+
         <Stack.Navigator>
           <Stack.Screen
             name="Launchpage"
