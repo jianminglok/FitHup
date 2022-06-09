@@ -205,14 +205,22 @@ const styles = StyleSheet.create({
       flex: 1
   },
 
-  profileContainer : {
+  profileContainer: {
     flex : 1,
     backgroundColor : colours.background,
-    
+  },
 
+  profileDropdownContainer: {
+    marginHorizontal: 27
+  },
 
-  }
-
+  dropdownText: {
+    color: colours.text,
+    fontFamily: "RobotoRegular",
+    fontSize: 14,
+    flex: 1,
+    textAlign: 'left'
+  },
 });
 
 export default styles;
