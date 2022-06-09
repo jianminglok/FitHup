@@ -6,7 +6,9 @@ import Style from './Style';
 
 export default TopBar = ({navigation}) => {
     return (
+
         <SafeAreaView style={Style.topBar}>
+            <StatusBar/>
             <TouchableOpacity>
                 <MenuIcon />
             </TouchableOpacity>

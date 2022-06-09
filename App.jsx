@@ -38,7 +38,7 @@ export default function App() {
               
           <Stack.Screen
             name="Set up Profile"
-            component={SetupProfile}
+            component={BottomBar}
             options={{
               headerShown: false,
             }}

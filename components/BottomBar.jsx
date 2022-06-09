@@ -7,6 +7,7 @@ import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
 import { Image } from 'react-native';
 import SetupProfile from './SetupProfile';
+import ActivityLoggerExercise from './ActivityLoggerExercise';
 
 
 const Tab = createBottomTabNavigator();
@@ -64,7 +65,7 @@ export default function BottomBar() {
           }} />
         <Tab.Screen
           name="Add Activity"
-          component={Homepage}
+          component={ActivityLoggerExercise}
           options={{
             tabBarIcon: ({ focused }) => (
               <Feather
@@ -75,7 +76,8 @@ export default function BottomBar() {
             ),
             tabBarButton: (props) => (
               <AddActivityButton {...props} />
-            )
+            ),
+            headerShown: false
           }} />
         <Tab.Screen
           name="Exercise"
