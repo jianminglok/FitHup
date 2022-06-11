@@ -16,6 +16,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { ApiError, Session } from "@supabase/supabase-js";
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
+//import GoogleFit, { Scopes } from 'react-native-google-fit';
 
 
 
@@ -25,10 +26,20 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function SetupProfile() {
+export default ActivityLoggerExercise = ({navigation}) => {
+
+    const [appIsReady, setAppIsReady] = useState(false);
+    const mounted = useRef(false);
+    const [counter, setCounter] = useState(0)
+    
+
+    state = {
+        fontsLoaded: false
+    }
+
 
     const [loading, setLoading] = useState(false);
-    const mounted = useRef(false);
+    
     const activities = ['Exercise', 'Food'];
     const exercies = ['Running', 'Swimming'];
 
@@ -66,9 +77,6 @@ export default function SetupProfile() {
         setEndTime(fEnd);
         
 
-        
-
-
     }
 
     const showMode = (currentMode, startOrEnd) => {
@@ -96,7 +104,33 @@ export default function SetupProfile() {
             }
         }
 
+        async function getListValue() {
+            try {
+                setLoading(true);
+                const user = supabase.auth.user();
+                if (!user) throw new Error("No user on the session!");
+                
+
+                const { data, error, count } = await supabase
+                .from('ActivityLoggerExercise')
+                .select('*', {count: 'exact' })
+
+                setCounter(count+1)
+           
+            }
+
+            catch (error) {
+                console.log('no')
+            }
+
+            finally {
+                setLoading(false)
+            }
+
+        }
+
         prepare();
+        getListValue();
 
         return () => { mounted.current = false; };
     }, []);
@@ -107,40 +141,32 @@ export default function SetupProfile() {
             setLoading(true);
 
             const user = supabase.auth.user();
-            //console.log(user)
             if (!user) throw new Error("No user on the session!");
 
-            // const updates = {
-            //     id : user.id,
-            //     //exerciseNumber : 1
-            //     exerciseType,
-            //     date : date.toISOString(),
-            //     startTime,
-            //     endTime,
-            //     caloriesAmount: parseInt(caloriesAmount)
-            // };
-
-            // console.log(updates)
+            const updates = {
+                id : user.id,
+                listValue : counter,
+                exerciseType,
+                exerciseNumber : 1,
+                date : date.toISOString(),
+                startTime,
+                endTime,
+                caloriesAmount: parseInt(caloriesAmount)
+            };
 
             
-            // const { data, error } = await supabase
-            //     .from('ActivityLoggerExercise')
-            //     .insert([
-            //         { exerciseType: 'someValue'},
-            // ]);
 
-            let { data: ActivityLoggerExercise, error } = await supabase
-            .from('ActivityLoggerExercise')
-            .select('id')
+            const { data, error } = await supabase
+                .from('ActivityLoggerExercise')
+                .upsert(updates)
+            ;
+
+        
 
             console.log(data)
+            console.log(error)
 
-            
-
-            console.log(typeof 'sd')
-
-           
-
+   
             if (data) {
                 Alert.alert('Activity successfully added')
                 success = true;    
@@ -154,18 +180,16 @@ export default function SetupProfile() {
 
         } catch (error) {
             
-            console.log('hi')
+            
             
         } finally {
             setLoading(false);
             if (success) {
-                console.log('success')
+                navigation.push("TabStack");
             }
 
         }
     }
-
-
 
 
     return (
@@ -317,7 +341,7 @@ export default function SetupProfile() {
 
     )
 
-}
+};
 
 const styles = StyleSheet.create({
     header: {
