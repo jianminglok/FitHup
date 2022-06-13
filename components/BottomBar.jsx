@@ -8,6 +8,7 @@ import React, { useState, useCallback, useEffect } from "react"
 import { Alert, Image } from 'react-native';
 import SetupProfile from './SetupProfile';
 import { supabase } from '../lib/supabase';
+import ActivityLogger from './ActivityLogger';
 
 const Tab = createBottomTabNavigator();
 
@@ -87,8 +88,9 @@ export default function BottomBar({ session, navigation }) {
         }} />
       <Tab.Screen
         name="Add Activity"
-        component={Homepage}
+        component={ActivityLogger}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Feather
               name="plus"
