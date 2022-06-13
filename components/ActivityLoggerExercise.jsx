@@ -1,22 +1,16 @@
 import { supabase } from '../lib/supabase'
-import React, { useState, useCallback, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import colours from "../assets/colours/colours";
-import { Alert, StyleSheet, StatusBar, Image, Text, View, TouchableOpacity, ScrollView, TextInput, Touchable } from "react-native"
+import { Alert, StyleSheet, Text, View, TextInput, } from "react-native"
 import TopBar from './TopBar';
-import { Dimensions } from "react-native";
 import Style from './Style';
-import Card from './Card';
 import Button from "./Button";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { ApiError, Session } from "@supabase/supabase-js";
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
-//import GoogleFit, { Scopes } from 'react-native-google-fit';
+import {values, exercises} from '../assets/activities';
 
 
 
@@ -28,21 +22,17 @@ let customFonts = {
 
 export default ActivityLoggerExercise = ({navigation}) => {
 
-    const [appIsReady, setAppIsReady] = useState(false);
-    const mounted = useRef(false);
-    const [counter, setCounter] = useState(0)
-    
-
     state = {
         fontsLoaded: false
     }
-
-
-    const [loading, setLoading] = useState(false);
-    
+    const [appIsReady, setAppIsReady] = useState(false);
+    const mounted = useRef(false);
+    const [counter, setCounter] = useState(0);
+    //const [googleAuth, setGoogleAuth] = useState(false);
+    const [weight,setWeight] = useState(0.0)
+    const [loading, setLoading] = useState(false);  
     const activities = ['Exercise', 'Food'];
-    const exercies = ['Running', 'Swimming'];
-
+    const exercies = exercises;
     const [date, setDate] = useState(new Date());
     const [mode,setMode] = useState('date')  
     const [show, setShow] = useState(false);
@@ -50,18 +40,19 @@ export default ActivityLoggerExercise = ({navigation}) => {
     const [startTime,setStartTime] = useState('Start Time');
     const [endTime,setEndTime] = useState('End Time');
     const[time, setTime] =useState('start');
-
-
     const [caloriesAmount, setCaloriesAmount] = useState('')
+    const [minDiff, setMinDiff] = useState();
+    const [hourDiff, setHourDiff] = useState();
 
-
-    const onChange = (event, selectedDate) => {
+   const onChange = (event, selectedDate) => {
         setShow(false);
         const currentDate = selectedDate || date;
         setDate(currentDate);
         let tempDate = new Date(currentDate);
         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
         let fStart = tempDate.getHours() + ':' + tempDate.getMinutes();
+        setMinDiff(-1 * tempDate.getMinutes());
+        setHourDiff(-1 * tempDate.getHours());
         setText(fDate); 
         setStartTime(fStart);
         
@@ -74,15 +65,30 @@ export default ActivityLoggerExercise = ({navigation}) => {
         setDate(currentDate);
         let tempDate = new Date(currentDate);
         let fEnd = tempDate.getHours() + ':' + tempDate.getMinutes();
+        setMinDiff(minDiff + tempDate.getMinutes());
+        setHourDiff(hourDiff + tempDate.getHours());
         setEndTime(fEnd);
         
-
     }
 
     const showMode = (currentMode, startOrEnd) => {
         setShow(true);
         setMode(currentMode);
         setTime(startOrEnd)
+    };
+
+    const computeCal = (weight, duration, value) =>{
+    
+        value = Math.floor(value);
+        
+        //duration in minutes
+        duration = Math.floor(duration);
+        //get weight in kg and convert to pounds
+        weight = Math.floor(weight * 2.20462);
+        const tmpCalories = value.toFixed(2);
+        const tmpTotal = Math.abs(tmpCalories* (weight/2.2)* (duration/60)).toFixed(0);
+        return tmpTotal;
+    
     };
 
     const [activity, setActivity] = useState();
@@ -114,23 +120,89 @@ export default ActivityLoggerExercise = ({navigation}) => {
                 const { data, error, count } = await supabase
                 .from('ActivityLoggerExercise')
                 .select('*', {count: 'exact' })
-
                 setCounter(count+1)
+
            
             }
 
+     
             catch (error) {
-                console.log('no')
+                console.log('error')
             }
+
+           
 
             finally {
                 setLoading(false)
             }
 
         }
+        
+        async function getWeight() {
+            try {
+                setLoading(true);
+                const user = supabase.auth.user();
+                if (!user) throw new Error("No user on the session!");
+                
+
+                const { data, error } = await supabase
+                .from('profiles')
+                .select('weight')
+                .eq("id", user.id)
+                .single();
+                setWeight(data['weight'])
+                
+           
+            }
+
+     
+            catch (error) {
+                console.log('error')
+            }
+
+           
+
+            finally {
+                setLoading(false)
+            }
+
+        }
+       
+
+        // const options = {
+        //     scopes: [
+        //         Scopes.FITNESS_ACTIVITY_READ,
+        //         Scopes.FITNESS_ACTIVITY_WRITE,
+        //         Scopes.FITNESS_BODY_READ,
+        //         Scopes.FITNESS_BODY_WRITE,
+        //         Scopes.FITNESS_LOCATION_READ,
+        //     ],
+
+        // };
+
+        // GoogleFit.authorize(options)
+        //     .then(authResult => {
+        //         if (authResult.success) {
+        //             console.log('AUTH_SUCCESS');
+        //             setGoogleAuth(true);
+        //         } else {
+        //             console.log("AUTH_DENIED", authResult);
+        //         }
+        //     })
+        //     .catch(() => {
+        //         console.log("AUTH_ERROR")
+        //     });
+
+        // // Call when authorized
+        //GoogleFit.startRecording((callback)=>{
+        //     // Process data from Google Fit Recording API (no google fit app needed)
+
+        //})
+
 
         prepare();
         getListValue();
+        getWeight();
 
         return () => { mounted.current = false; };
     }, []);
@@ -143,11 +215,25 @@ export default ActivityLoggerExercise = ({navigation}) => {
             const user = supabase.auth.user();
             if (!user) throw new Error("No user on the session!");
 
+            let duration = minDiff + hourDiff * 60;
+            let exerciseNumber = values[exerciseType];
+
+            let recommendedCalories = computeCal(weight, duration, exerciseNumber);
+            console.log(recommendedCalories);
+
+            if (!exerciseType) {
+                throw new Error("Enter the type of exercise")
+            }
+
+
+            if (caloriesAmount > 1.25 * recommendedCalories) {
+                throw new Error("The value of calories is too high")
+            }
+
             const updates = {
                 id : user.id,
                 listValue : counter,
                 exerciseType,
-                exerciseNumber : 1,
                 date : date.toISOString(),
                 startTime,
                 endTime,
@@ -158,13 +244,12 @@ export default ActivityLoggerExercise = ({navigation}) => {
 
             const { data, error } = await supabase
                 .from('ActivityLoggerExercise')
-                .upsert(updates)
-            ;
+                .upsert(updates);
 
         
 
-            console.log(data)
-            console.log(error)
+            //console.log(data)
+            //console.log(error)
 
    
             if (data) {
@@ -176,10 +261,10 @@ export default ActivityLoggerExercise = ({navigation}) => {
             if (error) {
                 throw error;
             }
-            console.log(error)
+            
 
         } catch (error) {
-            
+            Alert.alert((error).message);
             
             
         } finally {
@@ -190,6 +275,21 @@ export default ActivityLoggerExercise = ({navigation}) => {
 
         }
     }
+
+    // let opt = {
+    //     startDate: "2017-01-01T00:00:17.971Z",
+    //     endDate: new Date().toISOString(),
+    //     //bucketUnit: BucketUnit.DAY,
+    //     bucketInterval: 1,
+    // };
+
+    // async function fetchData() {
+    //     const res = await GoogleFit.getActivitySamples(opt)
+    //     console.log(res);
+
+    // };
+    
+
 
 
     return (
@@ -207,6 +307,7 @@ export default ActivityLoggerExercise = ({navigation}) => {
                 <View >
                     <SelectDropdown 
                         data = {activities}
+                        defaultValueByIndex = {0}
                         buttonStyle = {styles.selection}
                         buttonTextStyle = {Style.sampleEmail}
                         renderDropdownIcon = {() => <Entypo 
@@ -265,7 +366,8 @@ export default ActivityLoggerExercise = ({navigation}) => {
                     <Text
                         onPress= {() => showMode('date')}
                         style={Style.sampleEmail}
-                    >{text}</Text>
+                    >{text}
+                    </Text>
                 </View>
 
             </View>
@@ -323,19 +425,19 @@ export default ActivityLoggerExercise = ({navigation}) => {
                         
                     />
                 </View>
+
+
             </View>
 
             {/* Save Profile button */}
-            <View style={[Style.loginOrSignUpButton, {marginTop: 31}]}>
+            <View style={[Style.loginOrSignUpButton, {marginTop: 20}]}>
                 <Button 
                     title={"Add activity"} 
                     onPress={()=> addActivity()}
+                    //onPress={()=> fetchData()}
+
             />
             </View>
-
-
-
-
 
         </View>
 
