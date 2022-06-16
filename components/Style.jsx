@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 
   topBar: {
     flexDirection: "row",
-    marginVertical: StatusBar.currentHeight,
+    marginVertical: 17,
     marginHorizontal: 19,
     justifyContent: 'center',
     alignItems: 'center'

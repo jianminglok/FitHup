@@ -154,9 +154,12 @@ export default SetupProfile = ({ navigation }) => {
                 profileSetup: true
             };
 
+            
+
             const { data, error } = await supabase
                 .from('profiles')
                 .upsert(updates, { onConflict: 'id' })
+
 
             if (data) {
                 Alert.alert('Profile successfully updated')

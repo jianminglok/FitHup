@@ -9,6 +9,7 @@ import Launchpage from './components/Launchpage';
 import Homepage from './components/Homepage';
 import SetupProfile from './components/SetupProfile';
 import BottomBar from './components/BottomBar';
+import ActivityLoggerExercise from './components/ActivityLoggerExercise';
 import 'react-native-url-polyfill/auto'
 import { Alert } from 'react-native';
 
@@ -50,6 +51,16 @@ export default function App() {
               headerShown: false,
             }}
           />
+
+          <Stack.Screen
+            name="ActivityLoggerExercise"
+            component={ActivityLoggerExercise}
+            options={{
+              headerShown: false,
+            }}
+          />
+
+
         </Stack.Navigator> :
 
         <Stack.Navigator>

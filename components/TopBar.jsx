@@ -1,13 +1,23 @@
 import { StyleSheet, StatusBar, Image, Text, View, TouchableOpacity, Button, ScrollView } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { supabase } from "../lib/supabase";
 import MenuIcon from "./MenuIcon";
 import Style from './Style';
 
 export default function TopBar({ navigation }) {
+
+    async function signOut() {
+        const { error } = await supabase.auth.signOut()
+        console.log(error);
+        navigation.navigate('Launchpage');
+
+    }
     return (
+
         <SafeAreaView style={Style.topBar}>
-            <TouchableOpacity>
-                <MenuIcon />
+            <StatusBar/>
+            <TouchableOpacity onPress={()=> signOut()}>
+                <MenuIcon/>
             </TouchableOpacity>
             <Text style={Style.topBarUsernameText}>User Name</Text>
             <TouchableOpacity onPress={() => navigation.navigate("SetupProfile")}>
