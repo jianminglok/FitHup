@@ -5,10 +5,11 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
-import { Alert, Image } from 'react-native';
+import { Alert, Image, View } from 'react-native';
 import SetupProfile from './SetupProfile';
 import { supabase } from '../lib/supabase';
-import ActivityLoggerExercise from './ActivityLoggerExercise'
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -51,6 +52,8 @@ export default function BottomBar({ session, navigation }) {
   }, []);
 
   return (
+    
+      
     <Tab.Navigator
       screenOptions={{
         tabBarShowLabel: false,
@@ -86,23 +89,21 @@ export default function BottomBar({ session, navigation }) {
             />
           )
         }} />
-      <Tab.Screen
-      
+
+
+      <Tab.Screen      
         name="Add Activity"
-        component={ActivityLoggerExercise}
+        component={Homepage}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <Feather
-              name="plus"
-              size={50}
-              color={colours.text}
-            />
-          ),
-          tabBarButton: (props) => (
-            <AddActivityButton {...props} />
+            <AddActivityButton navigation={navigation}/>
           )
-        }} />
+         
+      }} />
+
+      
+
       <Tab.Screen
         name="Exercise"
         component={Homepage}
@@ -128,5 +129,6 @@ export default function BottomBar({ session, navigation }) {
           )
         }} />
     </Tab.Navigator>
+    
   );
 }

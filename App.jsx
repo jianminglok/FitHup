@@ -12,6 +12,9 @@ import BottomBar from './components/BottomBar';
 import ActivityLoggerExercise from './components/ActivityLoggerExercise';
 import 'react-native-url-polyfill/auto'
 import { Alert } from 'react-native';
+import AddActivityButton from './components/AddActivityButton';
+import { View } from 'react-native-web';
+import ActivityLoggerCalorie from './components/ActivityLoggerCalorie';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +36,7 @@ export default function App() {
   }, [])
 
   return (
+    
     <NavigationContainer>
       {session && session.user ?
 
@@ -60,6 +64,13 @@ export default function App() {
             }}
           />
 
+          <Stack.Screen
+            name="ActivityLoggerCalorie"
+            component={ActivityLoggerCalorie}
+            options={{
+              headerShown: false,
+            }}
+          />
 
         </Stack.Navigator> :
 

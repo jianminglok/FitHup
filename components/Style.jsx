@@ -211,7 +211,8 @@ const styles = StyleSheet.create({
   },
 
   profileDropdownContainer: {
-    marginHorizontal: 27
+    marginHorizontal: 27,
+    
   },
 
   dropdownText: {

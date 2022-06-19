@@ -364,6 +364,7 @@ export default ActivityLoggerExercise = ({navigation}) => {
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
                             data={activities}
+                            defaultValueByIndex={0}
                             defaultButtonText={'Select activity type'}
                             buttonStyle={styles.selection}
                             buttonTextStyle={Style.dropdownText}
@@ -375,7 +376,12 @@ export default ActivityLoggerExercise = ({navigation}) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setActivityType(selectedItem)
+                                if (selectedItem === 'Exercise') {
+                                    setActivityType(selectedItem)
+                                }
+                                else {
+                                    navigation.push("ActivityLoggerCalorie")
+                                }
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
@@ -385,9 +391,7 @@ export default ActivityLoggerExercise = ({navigation}) => {
                         />
                     </View>
                 </View>
-
-                {activityType == 'Exercise' ?
-                    // Exercise
+                
                     <View>
                         {/*Exercise Type Field */}
                         <View>
@@ -506,13 +510,13 @@ export default ActivityLoggerExercise = ({navigation}) => {
                         {/* Save Activity button */}
                         <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
                             <Button
-                                title='Save Activity'
+                                title='Add Activity'
                                 onPress = {()=> addActivity()}
                             />
                         </View>
-                    </View> :
-                    // View for Dietary Intage Logger
-                    <View></View>}
+                    </View> 
+                    
+                    
             </KeyboardAwareScrollView>
         </View>
     );

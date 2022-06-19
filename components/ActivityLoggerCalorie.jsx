@@ -30,7 +30,7 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default ActivityLogger = ({ navigation }) => {
+export default ActivityLoggerCalorie = ({ navigation }) => {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
 
@@ -39,70 +39,48 @@ export default ActivityLogger = ({ navigation }) => {
     }
 
     const activityTypes = ['Exercise', 'Dietary Intake']
-    const exerciseTypes = [
-        'Aerobics',
-        'Backpacking',
-        'Badminton (singles)',
-        'Baseball',
-        'Basketball (half-court)',
-        'Bicycling indoors (stationary bike)',
-        'Bicycling stationary 100 w light error',
-        'Bicycling stationary 150 w moderate effort',
-        'Bicycling outdoors < 10 mph leisure',
-        'Bicycling outdoors 10 - 11.9 mph leisuire light effort',
-        'Bicycling outdoors 12 - 13.9 mph leisure moderate error',
-        'Bicycling outdoors 14 - 15.9 mph fast or vigorous effort',
-        'Calisthenics pushups pullups situps vigorous effort',
-        'Calisthenics home exercise light or moderate effort'
+    const foodTypes = [
+        'Rice',
+        'Chicken',
+        'Noodles'
     ]
+    const units = ['grams', 'bowls'];
+    const [portionValue, setPortionValue] = useState('');
 
-    const [name, setName] = useState('');
+   
 
-    const [exerciseDate, setExerciseDate] = useState(new Date());
-    const [exerciseDateShow, setExerciseDateShow] = useState(false);
-    const [exerciseDateText, setExerciseDateText] = useState('DD/MM/YYYY');
+    const [foodDate, setFoodDate] = useState(new Date());
+    const [foodDateShow, setFoodDateShow] = useState(false);
+    const [foodDateText, setFoodDateText] = useState('DD/MM/YYYY');
 
-    const onExerciseDateChange = (event, selectedDate) => {
-        setExerciseDateShow(false);
+    const onFoodDateChange = (event, selectedDate) => {
+        setFoodDateShow(false);
         const currentDate = selectedDate || date;
-        setExerciseDate(currentDate);
+        setFoodDate(currentDate);
         let tempDate = new Date(currentDate);
         //Convert date to a readable format
         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-        setExerciseDateText(fDate);
+        setFoodDateText(fDate);
     }
 
-    const [exerciseStartTime, setExerciseStartTime] = useState(new Date());
-    const [exerciseStartTimeShow, setExerciseStartTimeShow] = useState(false);
-    const [exerciseStartTimeText, setExerciseStartTimeText] = useState('hh:mm');
+    const [foodStartTime, setFoodStartTime] = useState(new Date());
+    const [foodStartTimeShow, setFoodStartTimeShow] = useState(false);
+    const [foodStartTimeText, setFoodStartTimeText] = useState('hh:mm');
 
-    const onExerciseStartTimeChange = (event, selectedDate) => {
-        setExerciseStartTimeShow(false);
+    const onfoodStartTimeChange = (event, selectedDate) => {
+        setFoodStartTimeShow(false);
         const currentDate = selectedDate || date;
-        setExerciseStartTime(currentDate);
+        setFoodStartTime(currentDate);
         let tempDate = new Date(currentDate);
         //Convert date to a readable format
         let fDate = tempDate.getHours() + ':' + String(tempDate.getMinutes()).padStart(2, '0');
-        setExerciseStartTimeText(fDate);
+        setFoodStartTimeText(fDate);
     }
 
-    const [exerciseEndTime, setExerciseEndTime] = useState(new Date());
-    const [exerciseEndTimeShow, setExerciseEndTimeShow] = useState(false);
-    const [exerciseEndTimeText, setExerciseEndTimeText] = useState('hh:mm');
 
-    const onExerciseEndTimeChange = (event, selectedDate) => {
-        setExerciseEndTimeShow(false);
-        const currentDate = selectedDate || date;
-        setExerciseEndTime(currentDate);
-        let tempDate = new Date(currentDate);
-        //Convert date to a readable format
-        let fDate = tempDate.getHours() + ':' + String(tempDate.getMinutes()).padStart(2, '0');
-        setExerciseEndTimeText(fDate);
-    }
-
-    const [activityType, setActivityType] = useState('Exercise');
-    const [exerciseType, setExerciseType] = useState('');
-    const [caloriesAmount, setCaloriesAmount] = useState('');
+    const [activityType, setActivityType] = useState('Dietary Intake');
+    const [foodType, setFoodType] = useState('');
+    
 
     useEffect(() => {
         mounted.current = true;
@@ -111,6 +89,7 @@ export default ActivityLogger = ({ navigation }) => {
             try {
                 await SplashScreen.preventAutoHideAsync();
                 await Font.loadAsync(customFonts);
+
             } catch (error) {
                 console.warn(error);
             } finally {
@@ -151,6 +130,7 @@ export default ActivityLogger = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
+                            defaultValueByIndex={1}
                             data={activityTypes}
                             defaultButtonText={'Select activity type'}
                             buttonStyle={styles.selection}
@@ -163,7 +143,11 @@ export default ActivityLogger = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setActivityType(selectedItem)
+                                if (selectedItem === 'Dietary Intake') {
+                                    setActivityType(selectedItem)
+                                } else {
+                                    navigation.push('ActivityLoggerExercise')
+                                }
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
@@ -174,17 +158,15 @@ export default ActivityLogger = ({ navigation }) => {
                     </View>
                 </View>
 
-                {activityType == 'Exercise' ?
-                    // Exercise
                     <View>
-                        {/*Exercise Type Field */}
+                        {/*Food Type Field */}
                         <View>
-                            <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
+                            <Text style={[Style.email, { marginTop: 18 }]}>Type of Food</Text>
 
                             <View style={Style.profileDropdownContainer}>
                                 <SelectDropdown
-                                    data={exerciseTypes}
-                                    defaultButtonText={'Select exercise type'}
+                                    data={foodTypes}
+                                    defaultButtonText={'Select food type'}
                                     buttonStyle={styles.selection}
                                     buttonTextStyle={Style.dropdownText}
                                     renderDropdownIcon={() => <Entypo
@@ -195,7 +177,7 @@ export default ActivityLogger = ({ navigation }) => {
                                     />}
                                     dropdownIconPosition="right"
                                     onSelect={(selectedItem, index) => {
-                                        setExerciseType(selectedItem)
+                                        setFoodType(selectedItem)
                                     }}
                                     buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                                     rowTextForSelection={(item, index) => item}
@@ -205,101 +187,111 @@ export default ActivityLogger = ({ navigation }) => {
                             </View>
                         </View>
 
-                        {/*Date of Exercise Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Date of Exercise</Text>
+                        
+                        <View style={{ flexDirection: 'row' }}>
+                            {/* Portion Field */}
+                            <View style={{ flex: 1 }}>
+                                <Text style={[Style.email, { marginTop: 18 }]}>Portion Size</Text>
 
-                            {/* Date of Exercise Rectangle */}
+                                <View style = {Style.rect}>
+                                    <TextInput
+                                        style={[Style.sampleEmail]}
+                                        keyboardType='number-pad'
+                                        placeholder="0"
+                                        placeholderTextColor={colours.text}
+                                        value={portionValue}
+                                        onChangeText={(portionValue) => setPortionValue(portionValue.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
+                                        autoCapitalize="none"
+                                        returnKeyType="next"
+                                        
+                                    />
+                                </View>
+                            </View>
+                            
+                            <View style={{ flex: 1 }}>
+                                <Text style={[Style.email, { marginTop: 18 }]}> 
+                                    Unit of measurement
+                                </Text>
+                                <View style={Style.profileDropdownContainer}>
+                                    <SelectDropdown
+                                        data={units}
+                                        defaultButtonText={'Select unit'}
+                                        buttonStyle={styles.selection}
+                                        buttonTextStyle={Style.dropdownText}
+                                        renderDropdownIcon={() => <Entypo
+                                            name="chevron-small-down"
+                                            size={24}
+                                            color={colours.text}
+
+                                        />}
+                                        dropdownIconPosition="right"
+                                        onSelect={(selectedItem, index) => {
+                                            setFoodType(selectedItem)
+                                        }}
+                                        buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                        rowTextForSelection={(item, index) => item}
+                                        rowStyle={{ backgroundColor: colours.background }}
+                                        rowTextStyle={Style.dropdownText}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+
+
+
+                        {/*Date of Food intake Field */}
+                        <View>
+                            <Text style={[Style.email, { marginTop: 13 }]}>Date of dietary intake</Text>
+
+                            {/* Date of Food intake Rectangle */}
                             <View style={Style.rect}>
                                 <Text
-                                    onPress={() => setExerciseDateShow(true)}
+                                    onPress={() => setFoodDateShow(true)}
                                     style={Style.sampleEmail}>
-                                    {exerciseDateText}
+                                    {foodDateText}
                                 </Text>
                             </View>
 
-                            {exerciseDateShow && (
+                            {foodDateShow && (
                                 <DateTimePicker
                                     testID="dateTimePicker"
-                                    value={exerciseDate}
+                                    value={foodDate}
                                     display='default'
-                                    onChange={onExerciseDateChange}
+                                    onChange={onFoodDateChange}
                                 />)}
                         </View>
 
-                        {/*Exercise Start Time Field */}
+                        {/*Food Start Time Field */}
                         <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Exercise Start Time</Text>
+                            <Text style={[Style.email, { marginTop: 13 }]}>Dietary Intake Start Time</Text>
 
-                            {/* Date of Exercise Rectangle */}
+                            {/* Date of Food Rectangle */}
                             <View style={Style.rect}>
                                 <Text
-                                    onPress={() => setExerciseStartTimeShow(true)}
+                                    onPress={() => setFoodStartTimeShow(true)}
                                     style={Style.sampleEmail}>
-                                    {exerciseStartTimeText}
+                                    {foodStartTimeText}
                                 </Text>
                             </View>
 
-                            {exerciseStartTimeShow && (
+                            {foodStartTimeShow && (
                                 <DateTimePicker
                                     testID="dateTimePicker"
-                                    value={exerciseStartTime}
+                                    value={foodStartTime}
                                     display='default'
                                     mode='time'
-                                    onChange={onExerciseStartTimeChange}
+                                    onChange={onfoodStartTimeChange}
                                 />)}
                         </View>
 
-                        {/*Exercise End Time Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Exercise End Time</Text>
-
-                            {/* Date of Exercise Rectangle */}
-                            <View style={Style.rect}>
-                                <Text
-                                    onPress={() => setExerciseEndTimeShow(true)}
-                                    style={Style.sampleEmail}>
-                                    {exerciseEndTimeText}
-                                </Text>
-                            </View>
-
-                            {exerciseEndTimeShow && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={exerciseEndTime}
-                                    display='default'
-                                    mode='time'
-                                    onChange={onExerciseEndTimeChange}
-                                />)}
-                        </View>
-
-                        {/*Calories Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Amount of Calories Burnt (cal)</Text>
-                            {/* Calories Rectangle */}
-                            <View style={Style.rect}>
-                                <TextInput
-                                    style={[Style.sampleEmail]}
-                                    keyboardType='number-pad'
-                                    placeholder="Amount of Calories Burnt"
-                                    placeholderTextColor={colours.text}
-                                    value={caloriesAmount}
-                                    onChangeText={(caloriesAmount) => setCaloriesAmount(caloriesAmount.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                />
-                            </View>
-                        </View>
-
+                        
                         {/* Save Activity button */}
-                        <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
+                        <View style={[Style.loginOrSignUpButton, { marginVertical: 100 }]}>
                             <Button
-                                title='Save Activity'
+                                title='Add Activity'
                             />
                         </View>
-                    </View> :
-                    // View for Dietary Intage Logger
-                    <View></View>}
+                    </View> 
             </KeyboardAwareScrollView>
         </View>
     );
