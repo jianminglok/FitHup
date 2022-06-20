@@ -1,7 +1,6 @@
 import {
   StatusBar,
   StyleSheet,
-
 } from "react-native";
 import colours from "../assets/colours/colours";
 import { Dimensions } from "react-native";
@@ -179,7 +178,6 @@ const styles = StyleSheet.create({
   },
 
   cardTitle: {
-    fontSize: 24,
     fontFamily: "MontserratBold",
     fontWeight: "700",
     color: colours.text,

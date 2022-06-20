@@ -5,12 +5,123 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
-import { Alert, Image } from 'react-native';
+import { Alert, Image, View, Text } from 'react-native';
 import SetupProfile from './SetupProfile';
 import { supabase } from '../lib/supabase';
 import ActivityLoggerExercise from './ActivityLoggerExercise'
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Style from "./Style";
+import { useDispatch, useSelector } from 'react-redux';
+import Exercise from './Exercise';
+import ActivityLoggerCalorie from './ActivityLoggerCalorie';
 
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      throw error;
+    } else {
+      navigation.navigate('Launchpage');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function CustomDrawerContent(props) {
+  const dispatch = useDispatch();
+  const { name } = useSelector((state) => state.name);
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={[Style.header, { backgroundColor: colours.tab }]}>
+        <Text style={[{ color: colours.text, marginLeft: 17, fontSize: 20 }]}>Hi, {name}</Text>
+      </View>
+      <DrawerContentScrollView {...props}>
+        <DrawerItem
+          label="Sign Out"
+          onPress={() => signOut()}
+          labelStyle={{
+            color: colours.text
+          }}
+        />
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+}
+
+function HomepageDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="Homepage"
+        component={Homepage}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
+function ActivityLoggerExerciseDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="Homepage"
+        component={ActivityLoggerCalorie}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
+function ExerciseDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="Homepage"
+        component={Exercise}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
 
 export default function BottomBar({ session, navigation }) {
 
@@ -61,7 +172,7 @@ export default function BottomBar({ session, navigation }) {
       }}>
       <Tab.Screen
         name="Leaderboard"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -87,9 +198,8 @@ export default function BottomBar({ session, navigation }) {
           )
         }} />
       <Tab.Screen
-      
         name="Add Activity"
-        component={ActivityLoggerExercise}
+        component={ActivityLoggerExerciseDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -105,8 +215,9 @@ export default function BottomBar({ session, navigation }) {
         }} />
       <Tab.Screen
         name="Exercise"
-        component={Homepage}
+        component={ExerciseDrawer}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="dumbbell"

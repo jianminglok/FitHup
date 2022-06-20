@@ -21,10 +21,7 @@ import Button from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
-import {values, exercises} from '../assets/activities';
-
-
-
+import { values, exercises } from '../assets/activities';
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -32,7 +29,7 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default ActivityLoggerExercise = ({navigation}) => {
+export default ActivityLoggerExercise = ({ navigation }) => {
 
     state = {
         fontsLoaded: false
@@ -41,31 +38,26 @@ export default ActivityLoggerExercise = ({navigation}) => {
     const mounted = useRef(false);
     const [counter, setCounter] = useState(0);
     //const [googleAuth, setGoogleAuth] = useState(false);
-    const [weight,setWeight] = useState(0.0)
-    const [loading, setLoading] = useState(false);  
+    const [weight, setWeight] = useState(0.0)
+    const [loading, setLoading] = useState(false);
 
     const activities = ['Exercise', 'Dietary Intake'];
     const exercies = exercises;
 
+    const computeCal = (weight, duration, value) => {
 
-   
-     const computeCal = (weight, duration, value) =>{
-    
         value = Math.floor(value);
-        
+
         //duration in minutes
         duration = Math.floor(duration);
         //get weight in kg and convert to pounds
         weight = Math.floor(weight * 2.20462);
         const tmpCalories = value.toFixed(2);
-        const tmpTotal = Math.abs(tmpCalories* (weight/2.2)* (duration/60)).toFixed(0);
+        const tmpTotal = Math.abs(tmpCalories * (weight / 2.2) * (duration / 60)).toFixed(0);
         return tmpTotal;
-    
+
     };
 
-   
-
-    
     const [name, setName] = useState('');
 
     const [exerciseDate, setExerciseDate] = useState(new Date());
@@ -94,7 +86,6 @@ export default ActivityLoggerExercise = ({navigation}) => {
         //Convert date to a readable format
         let fDate = String(tempDate.getHours()).padStart(2, '0') + ':' + String(tempDate.getMinutes()).padStart(2, '0');
         setExerciseStartTimeText(fDate);
-        
     }
 
     const [exerciseEndTime, setExerciseEndTime] = useState(new Date());
@@ -136,60 +127,49 @@ export default ActivityLoggerExercise = ({navigation}) => {
                 setLoading(true);
                 const user = supabase.auth.user();
                 if (!user) throw new Error("No user on the session!");
-                
 
                 const { data, error, count } = await supabase
-                .from('ActivityLoggerExercise')
-                .select('*', {count: 'exact' })
-                .eq("id", user.id)
-                setCounter(count+1)
-
-           
+                    .from('ActivityLoggerExercise')
+                    .select('*', { count: 'exact' })
+                    .eq("id", user.id)
+                setCounter(count + 1)
             }
 
-     
             catch (error) {
                 console.log('error')
             }
 
-           
-
             finally {
                 setLoading(false)
             }
-
         }
-        
+
         async function getWeight() {
             try {
                 setLoading(true);
                 const user = supabase.auth.user();
                 if (!user) throw new Error("No user on the session!");
-                
 
                 const { data, error } = await supabase
-                .from('profiles')
-                .select('weight')
-                .eq("id", user.id)
-                .single();
-                setWeight(data['weight'])
-                
-           
-            }
+                    .from('profiles')
+                    .select('weight')
+                    .eq("id", user.id)
+                    .single();
 
-     
+                if (data) {
+                    setWeight(data['weight'])
+                } else if (error) {
+                    throw error;
+                }
+            }
             catch (error) {
                 console.log('error')
             }
-
-           
-
             finally {
                 setLoading(false)
             }
 
         }
-       
 
         // const options = {
         //     scopes: [
@@ -221,7 +201,6 @@ export default ActivityLoggerExercise = ({navigation}) => {
 
         //})
 
-
         prepare();
         getListValue();
         getWeight();
@@ -238,12 +217,12 @@ export default ActivityLoggerExercise = ({navigation}) => {
         var hours = Math.floor(diff / 1000 / 60 / 60);
         diff -= hours * 1000 * 60 * 60;
         var minutes = Math.floor(diff / 1000 / 60);
-    
+
         // If using time pickers with 24 hours format, add the below line get exact hours
         if (hours < 0)
-           hours = hours + 24;
-    
-      return minutes + hours * 60 
+            hours = hours + 24;
+
+        return minutes + hours * 60
     }
 
     async function addActivity() {
@@ -259,12 +238,12 @@ export default ActivityLoggerExercise = ({navigation}) => {
             let duration = diff(exerciseStartTimeText, exerciseEndTimeText);
             let exerciseNumber = values[exerciseType];
             let recommendedCalories = computeCal(weight, duration, exerciseNumber);
-            
+
 
             if (!exerciseType) {
                 throw new Error("Enter the type of exercise")
             }
-            
+
             if (!caloriesAmount) {
                 throw new Error("Enter the calories amount!")
             }
@@ -274,49 +253,37 @@ export default ActivityLoggerExercise = ({navigation}) => {
             }
 
             const updates = {
-                id : user.id,
-                listValue : counter,
+                id: user.id,
+                listValue: counter,
                 exerciseType,
-                date : exerciseDate.toISOString(),
+                date: exerciseDate.toISOString(),
                 startTime: exerciseStartTimeText,
                 endTime: exerciseEndTimeText,
                 caloriesAmount: parseInt(caloriesAmount)
             };
 
-            
-
             const { data, error } = await supabase
                 .from('ActivityLoggerExercise')
                 .upsert(updates);
 
-        
-
             //console.log(data)
             //console.log(error)
 
-   
             if (data) {
                 Alert.alert('Activity successfully added')
-                success = true;    
+                success = true;
             }
-
 
             if (error) {
                 throw error;
             }
-            
-
         } catch (error) {
             Alert.alert((error).message);
-            
-            
-            
         } finally {
             setLoading(false);
             if (success) {
                 navigation.push("TabStack");
             }
-
         }
     }
 
@@ -332,11 +299,7 @@ export default ActivityLoggerExercise = ({navigation}) => {
     //     console.log(res);
 
     // };
-    
 
-
-
-   
     // Display splash screen while font is loading
     const onLayoutRootView = useCallback(async () => {
         if (appIsReady) {
@@ -353,18 +316,17 @@ export default ActivityLoggerExercise = ({navigation}) => {
             <StatusBar />
             <TopBar navigation={navigation} />
             <Text style={styles.header}>
-                Activity Logger
+                Activity Logger (Exercise)
             </Text>
 
             <KeyboardAwareScrollView>
-                {/*Activity Type Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 18 }]}>Activity Type</Text>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            data={activities}
-                            defaultButtonText={'Select activity type'}
+                            data={exercies}
+                            defaultButtonText={'Select exercise type'}
                             buttonStyle={styles.selection}
                             buttonTextStyle={Style.dropdownText}
                             renderDropdownIcon={() => <Entypo
@@ -375,144 +337,110 @@ export default ActivityLoggerExercise = ({navigation}) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setActivityType(selectedItem)
+                                setExerciseType(selectedItem)
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
                             rowStyle={{ backgroundColor: colours.background }}
                             rowTextStyle={Style.dropdownText}
-                            defaultValue={activityType}
+                            search
                         />
                     </View>
                 </View>
 
-                {activityType == 'Exercise' ?
-                    // Exercise
-                    <View>
-                        {/*Exercise Type Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
+                {/*Date of Exercise Field */}
+                <View>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Date of Exercise</Text>
 
-                            <View style={Style.profileDropdownContainer}>
-                                <SelectDropdown
-                                    data={exercies}
-                                    defaultButtonText={'Select exercise type'}
-                                    buttonStyle={styles.selection}
-                                    buttonTextStyle={Style.dropdownText}
-                                    renderDropdownIcon={() => <Entypo
-                                        name="chevron-small-down"
-                                        size={24}
-                                        color={colours.text}
+                    {/* Date of Exercise Rectangle */}
+                    <View style={Style.rect}>
+                        <Text
+                            onPress={() => setExerciseDateShow(true)}
+                            style={Style.sampleEmail}>
+                            {exerciseDateText}
+                        </Text>
+                    </View>
 
-                                    />}
-                                    dropdownIconPosition="right"
-                                    onSelect={(selectedItem, index) => {
-                                        setExerciseType(selectedItem)
-                                    }}
-                                    buttonTextAfterSelection={(selectedItem, index) => selectedItem}
-                                    rowTextForSelection={(item, index) => item}
-                                    rowStyle={{ backgroundColor: colours.background }}
-                                    rowTextStyle={Style.dropdownText}
-                                />
-                            </View>
-                        </View>
+                    {exerciseDateShow && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={exerciseDate}
+                            display='default'
+                            onChange={onExerciseDateChange}
+                        />)}
+                </View>
 
-                        {/*Date of Exercise Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Date of Exercise</Text>
+                {/*Exercise Start Time Field */}
+                <View>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Exercise Start Time</Text>
 
-                            {/* Date of Exercise Rectangle */}
-                            <View style={Style.rect}>
-                                <Text
-                                    onPress={() => setExerciseDateShow(true)}
-                                    style={Style.sampleEmail}>
-                                    {exerciseDateText}
-                                </Text>
-                            </View>
+                    {/* Date of Exercise Rectangle */}
+                    <View style={Style.rect}>
+                        <Text
+                            onPress={() => setExerciseStartTimeShow(true)}
+                            style={Style.sampleEmail}>
+                            {exerciseStartTimeText}
+                        </Text>
+                    </View>
 
-                            {exerciseDateShow && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={exerciseDate}
-                                    display='default'
-                                    onChange={onExerciseDateChange}
-                                />)}
-                        </View>
+                    {exerciseStartTimeShow && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={exerciseStartTime}
+                            display='default'
+                            mode='time'
+                            onChange={onExerciseStartTimeChange}
+                        />)}
+                </View>
 
-                        {/*Exercise Start Time Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Exercise Start Time</Text>
+                {/*Exercise End Time Field */}
+                <View>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Exercise End Time</Text>
 
-                            {/* Date of Exercise Rectangle */}
-                            <View style={Style.rect}>
-                                <Text
-                                    onPress={() => setExerciseStartTimeShow(true)}
-                                    style={Style.sampleEmail}>
-                                    {exerciseStartTimeText}
-                                </Text>
-                            </View>
+                    {/* Date of Exercise Rectangle */}
+                    <View style={Style.rect}>
+                        <Text
+                            onPress={() => setExerciseEndTimeShow(true)}
+                            style={Style.sampleEmail}>
+                            {exerciseEndTimeText}
+                        </Text>
+                    </View>
 
-                            {exerciseStartTimeShow && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={exerciseStartTime}
-                                    display='default'
-                                    mode='time'
-                                    onChange={onExerciseStartTimeChange}
-                                />)}
-                        </View>
+                    {exerciseEndTimeShow && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={exerciseEndTime}
+                            display='default'
+                            mode='time'
+                            onChange={onExerciseEndTimeChange}
+                        />)}
+                </View>
 
-                        {/*Exercise End Time Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Exercise End Time</Text>
+                {/*Calories Field */}
+                <View>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Amount of Calories Burnt (cal)</Text>
+                    {/* Calories Rectangle */}
+                    <View style={Style.rect}>
+                        <TextInput
+                            style={[Style.sampleEmail]}
+                            keyboardType='number-pad'
+                            placeholder="Amount of Calories Burnt"
+                            placeholderTextColor={colours.text}
+                            value={caloriesAmount}
+                            onChangeText={(caloriesAmount) => setCaloriesAmount(caloriesAmount.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
+                            autoCapitalize="none"
+                            returnKeyType="next"
+                        />
+                    </View>
+                </View>
 
-                            {/* Date of Exercise Rectangle */}
-                            <View style={Style.rect}>
-                                <Text
-                                    onPress={() => setExerciseEndTimeShow(true)}
-                                    style={Style.sampleEmail}>
-                                    {exerciseEndTimeText}
-                                </Text>
-                            </View>
-
-                            {exerciseEndTimeShow && (
-                                <DateTimePicker
-                                    testID="dateTimePicker"
-                                    value={exerciseEndTime}
-                                    display='default'
-                                    mode='time'
-                                    onChange={onExerciseEndTimeChange}
-                                />)}
-                        </View>
-
-                        {/*Calories Field */}
-                        <View>
-                            <Text style={[Style.email, { marginTop: 13 }]}>Amount of Calories Burnt (cal)</Text>
-                            {/* Calories Rectangle */}
-                            <View style={Style.rect}>
-                                <TextInput
-                                    style={[Style.sampleEmail]}
-                                    keyboardType='number-pad'
-                                    placeholder="Amount of Calories Burnt"
-                                    placeholderTextColor={colours.text}
-                                    value={caloriesAmount}
-                                    onChangeText={(caloriesAmount) => setCaloriesAmount(caloriesAmount.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                />
-                            </View>
-                        </View>
-
-                        {/* Save Activity button */}
-                        <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
-                            <Button
-                                title='Save Activity'
-                                onPress = {()=> addActivity()}
-                            />
-                        </View>
-                    </View> :
-                    // View for Dietary Intage Logger
-                    <View></View>}
+                {/* Save Activity button */}
+                <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
+                    <Button
+                        title='Save Activity'
+                        onPress={() => addActivity()}
+                    />
+                </View>
             </KeyboardAwareScrollView>
         </View>
     );
@@ -525,7 +453,7 @@ const styles = StyleSheet.create({
         fontFamily: "MontserratBold",
         fontSize: 24,
         marginTop: 19,
-        marginLeft : 27
+        marginLeft: 27
 
 
     },

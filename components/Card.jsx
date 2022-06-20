@@ -6,11 +6,11 @@ import Style from './Style';
 
 var fullWidth = Dimensions.get('window').width; //full width
 
-export default function Card({ style, children, cardTitle }) {
+export default function Card({ style, children, cardTitle, titleSize }) {
     return (
         <View style={[Style.card, style]}>
             <View style={Style.cardBody}>
-                <Text style={Style.cardTitle}>{cardTitle}</Text>
+                <Text style={[Style.cardTitle, { fontSize: titleSize }]}>{cardTitle}</Text>
                 {children}
             </View>
         </View>
