@@ -18,7 +18,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
-import Exercise from './Exercise';
 import ActivityLoggerCalorie from './ActivityLoggerCalorie';
 
 const Tab = createBottomTabNavigator();
@@ -94,27 +93,6 @@ function ActivityLoggerExerciseDrawer() {
       <Drawer.Screen
         name="Homepage"
         component={ActivityLoggerCalorie}
-        options={{
-          headerShown: false,
-          drawerItemStyle: { height: 0 }
-        }} />
-    </Drawer.Navigator >
-  );
-}
-
-function ExerciseDrawer() {
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props}
-      />}
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: colours.background
-        },
-      }}>
-      <Drawer.Screen
-        name="Homepage"
-        component={Exercise}
         options={{
           headerShown: false,
           drawerItemStyle: { height: 0 }
@@ -215,7 +193,7 @@ export default function BottomBar({ session, navigation }) {
         }} />
       <Tab.Screen
         name="Exercise"
-        component={ExerciseDrawer}
+        component={HomepageDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
