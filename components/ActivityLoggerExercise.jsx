@@ -359,7 +359,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            data={activities}
+                            data={exercises}
                             defaultValueByIndex={0}
                             defaultButtonText={'Select activity type'}
                             buttonStyle={styles.selection}
@@ -372,18 +372,14 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                if (selectedItem === 'Exercise') {
-                                    setActivityType(selectedItem)
-                                }
-                                else {
-                                    navigation.push("ActivityLoggerCalorie")
-                                }
+                                setActivityType(selectedItem)
+                                
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
                             rowStyle={{ backgroundColor: colours.background }}
                             rowTextStyle={Style.dropdownText}
-                            search
+                            
                         />
                     </View>
                 </View>
