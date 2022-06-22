@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import nameReducer from "./slices/nameSlice";
+import profileReducer from "./slices/profileSlice";
 
 export const store = configureStore({
     reducer: {
-        name: nameReducer
+        profile: profileReducer
     },
 });

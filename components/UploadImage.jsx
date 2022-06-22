@@ -3,8 +3,11 @@ import { Alert, Image, View, Platform, TouchableOpacity, Text, StyleSheet } from
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../lib/supabase'
+import { useSelector, useDispatch } from 'react-redux';
+import { setProfilePic } from '../slices/profileSlice';
 
 export default function UploadImage() {
+    const { profilePic } = useSelector((state) => state.profile);
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -16,6 +19,8 @@ export default function UploadImage() {
             alert("Please grant camera roll permissions inside your system's settings");
         }
     }
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         mounted.current = true;
@@ -63,7 +68,7 @@ export default function UploadImage() {
             fileReaderInstance.readAsDataURL(data);
             fileReaderInstance.onload = () => {
                 let base64data = fileReaderInstance.result;
-                setImage(base64data)
+                dispatch(setProfilePic(base64data));
             }
         } catch (error) {
             Alert.alert('Error retrieving image: ', error.message)
@@ -80,6 +85,7 @@ export default function UploadImage() {
 
         if (!_image.cancelled) {
             setImage(_image.uri);
+            dispatch(setProfilePic(_image.uri));
 
             try {
                 setUploading(true)
@@ -137,12 +143,12 @@ export default function UploadImage() {
     return (
         <View style={imageUploaderStyles.container}>
             {
-                image && <Image source={{ uri: image }} style={{ width: 120, height: 120 }} />
+                profilePic && <Image source={{ uri: profilePic }} style={{ width: 120, height: 120 }} />
             }
 
             <View style={imageUploaderStyles.uploadBtnContainer}>
                 <TouchableOpacity onPress={addImage} style={imageUploaderStyles.uploadBtn} >
-                    <Text style={{ fontSize: 12 }}>{image ? 'Edit' : 'Upload'} Image</Text>
+                    <Text style={{ fontSize: 12 }}>{profilePic ? 'Edit' : 'Upload'} Image</Text>
                     <AntDesign name="camera" size={15} color="black" />
                 </TouchableOpacity>
             </View>

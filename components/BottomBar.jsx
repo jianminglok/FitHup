@@ -6,9 +6,7 @@ import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
 import { Alert, Image, View, Text } from 'react-native';
-import SetupProfile from './SetupProfile';
 import { supabase } from '../lib/supabase';
-import ActivityLoggerExercise from './ActivityLoggerExercise'
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -18,7 +16,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
-import ActivityLoggerCalorie from './ActivityLoggerCalorie';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -38,7 +35,7 @@ async function signOut() {
 
 function CustomDrawerContent(props) {
   const dispatch = useDispatch();
-  const { name } = useSelector((state) => state.name);
+  const { name } = useSelector((state) => state.profile);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -72,27 +69,6 @@ function HomepageDrawer() {
       <Drawer.Screen
         name="Homepage"
         component={Homepage}
-        options={{
-          headerShown: false,
-          drawerItemStyle: { height: 0 }
-        }} />
-    </Drawer.Navigator >
-  );
-}
-
-function ActivityLoggerExerciseDrawer() {
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props}
-      />}
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: colours.background
-        },
-      }}>
-      <Drawer.Screen
-        name="Homepage"
-        component={ActivityLoggerCalorie}
         options={{
           headerShown: false,
           drawerItemStyle: { height: 0 }
@@ -148,6 +124,7 @@ export default function BottomBar({ session, navigation }) {
           display: "flex"
         },
       }}>
+
       <Tab.Screen
         name="Leaderboard"
         component={HomepageDrawer}
@@ -163,9 +140,10 @@ export default function BottomBar({ session, navigation }) {
         }}
         session={session}
       />
+      
       <Tab.Screen
         name="Calories"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
@@ -175,27 +153,21 @@ export default function BottomBar({ session, navigation }) {
             />
           )
         }} />
+
       <Tab.Screen
         name="Add Activity"
-        component={ActivityLoggerExerciseDrawer}
+        component={HomepageDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <Feather
-              name="plus"
-              size={50}
-              color={colours.text}
-            />
-          ),
-          tabBarButton: (props) => (
-            <AddActivityButton {...props} />
+            <AddActivityButton navigation={navigation} />
           )
         }} />
+
       <Tab.Screen
         name="Exercise"
         component={HomepageDrawer}
         options={{
-          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="dumbbell"
@@ -204,9 +176,10 @@ export default function BottomBar({ session, navigation }) {
             />
           )
         }} />
+
       <Tab.Screen
         name="Target"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           tabBarIcon: ({ focused }) => (
             <Feather

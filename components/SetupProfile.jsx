@@ -23,7 +23,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { useDispatch, useSelector } from 'react-redux';
-import { setName } from "../slices/nameSlice";
+import { setName } from "../slices/profileSlice";
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -36,7 +36,7 @@ export default SetupProfile = ({ navigation }) => {
     const mounted = useRef(false);
 
     const dispatch = useDispatch();
-    const { name } = useSelector((state) => state.name);
+    const { name } = useSelector((state) => state.profile);
 
     state = {
         fontsLoaded: false

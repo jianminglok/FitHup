@@ -270,7 +270,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
             //console.log(error)
 
             if (data) {
-                Alert.alert('Activity successfully added')
+                Alert.alert('Exercise activity successfully added')
                 success = true;
             }
 
@@ -316,17 +316,18 @@ export default ActivityLoggerExercise = ({ navigation }) => {
             <StatusBar />
             <TopBar navigation={navigation} />
             <Text style={styles.header}>
-                Activity Logger (Exercise)
+                Activity Logger
             </Text>
 
             <KeyboardAwareScrollView>
                 <View>
-                    <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Activity Type</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            data={exercies}
-                            defaultButtonText={'Select exercise type'}
+                            data={activities}
+                            defaultValueByIndex={0}
+                            defaultButtonText={'Select activity type'}
                             buttonStyle={styles.selection}
                             buttonTextStyle={Style.dropdownText}
                             renderDropdownIcon={() => <Entypo
@@ -337,7 +338,46 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setExerciseType(selectedItem)
+                                if (selectedItem === 'Exercise') {
+                                    setActivityType(selectedItem)
+                                }
+                                else {
+                                    navigation.push("ActivityLoggerCalorie")
+                                }
+                            }}
+                            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                            rowTextForSelection={(item, index) => item}
+                            rowStyle={{ backgroundColor: colours.background }}
+                            rowTextStyle={Style.dropdownText}
+                            defaultValue={activityType}
+                        />
+                    </View>
+                </View>
+
+                <View>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
+
+                    <View style={Style.profileDropdownContainer}>
+                        <SelectDropdown
+                            data={activities}
+                            defaultValueByIndex={0}
+                            defaultButtonText={'Select activity type'}
+                            buttonStyle={styles.selection}
+                            buttonTextStyle={Style.dropdownText}
+                            renderDropdownIcon={() => <Entypo
+                                name="chevron-small-down"
+                                size={24}
+                                color={colours.text}
+
+                            />}
+                            dropdownIconPosition="right"
+                            onSelect={(selectedItem, index) => {
+                                if (selectedItem === 'Exercise') {
+                                    setActivityType(selectedItem)
+                                }
+                                else {
+                                    navigation.push("ActivityLoggerCalorie")
+                                }
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
@@ -350,7 +390,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                 {/*Date of Exercise Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 13 }]}>Date of Exercise</Text>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Date of Exercise</Text>
 
                     {/* Date of Exercise Rectangle */}
                     <View style={Style.rect}>

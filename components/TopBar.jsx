@@ -6,19 +6,38 @@ import { supabase } from "../lib/supabase";
 import MenuIcon from "./MenuIcon";
 import Style from './Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { setName } from "../slices/nameSlice";
+import { setName, setProfilePic } from "../slices/profileSlice";
+import { DrawerActions } from "@react-navigation/native";
 
 export default function TopBar({ navigation }) {
     const mounted = useRef(false);
 
     const toggleDrawer = () => {
-        navigation.toggleDrawer();
+        navigation.dispatch(DrawerActions.toggleDrawer());
     }
 
     const dispatch = useDispatch();
-    const { name } = useSelector((state) => state.name);
+    const { name, profilePic } = useSelector((state) => state.profile);
 
     const [loading, setLoading] = useState(false);
+
+    const downloadImage = async (path) => {
+        try {
+            const { data, error } = await supabase.storage.from('avatars').download(path)
+            if (error) {
+                throw error
+            }
+
+            const fileReaderInstance = new FileReader();
+            fileReaderInstance.readAsDataURL(data);
+            fileReaderInstance.onload = () => {
+                let base64data = fileReaderInstance.result;
+                dispatch(setProfilePic(base64data));
+            }
+        } catch (error) {
+            Alert.alert('Error retrieving image: ', error.message)
+        }
+    }
 
     useEffect(() => {
         mounted.current = true;
@@ -31,7 +50,7 @@ export default function TopBar({ navigation }) {
 
                 let { data, error, status } = await supabase
                     .from("profiles")
-                    .select(`name`)
+                    .select(`name, profilePic`)
                     .eq("id", user.id)
                     .single();
                 if (error && status !== 406) {
@@ -40,6 +59,7 @@ export default function TopBar({ navigation }) {
 
                 if (data) {
                     if (data.name) dispatch(setName(data.name));
+                    if (data.profilePic) downloadImage(data.profilePic);
                 }
             } catch (error) {
                 Alert.alert((error).message);
@@ -67,7 +87,7 @@ export default function TopBar({ navigation }) {
                 <Image
                     style={Style.topBarProfileIcon}
                     source={{
-                        uri: "https://firebasestorage.googleapis.com/v0/b/unify-bc2ad.appspot.com/o/e00gxd21wgj-10%3A212?alt=media&token=0b84b92e-ad6d-4f45-a1a5-2c519feb85fb",
+                        uri: profilePic,
                     }}
                 />
             </TouchableOpacity>

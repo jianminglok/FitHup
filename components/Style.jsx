@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
   topBarProfileIcon: {
     height: 32,
     width: 32,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    borderRadius: 999,
   },
 
   topBarUsernameText: {
@@ -209,7 +210,8 @@ const styles = StyleSheet.create({
   },
 
   profileDropdownContainer: {
-    marginHorizontal: 27
+    marginHorizontal: 27,
+    
   },
 
   dropdownText: {

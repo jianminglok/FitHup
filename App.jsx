@@ -11,12 +11,89 @@ import SetupProfile from './components/SetupProfile';
 import BottomBar from './components/BottomBar';
 import ActivityLoggerExercise from './components/ActivityLoggerExercise';
 import 'react-native-url-polyfill/auto'
-import { Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
-import { store } from './store' 
+import { store } from './store'
+import ActivityLoggerCalorie from './components/ActivityLoggerCalorie';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import { useDispatch, useSelector } from 'react-redux';
+import colours from './assets/colours/colours';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Style from "./components/Style";
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function CustomDrawerContent(props) {
+  const dispatch = useDispatch();
+  const { name } = useSelector((state) => state.profile);
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={[Style.header, { backgroundColor: colours.tab }]}>
+        <Text style={[{ color: colours.text, marginLeft: 17, fontSize: 20 }]}>Hi, {name}</Text>
+      </View>
+      <DrawerContentScrollView {...props}>
+        <DrawerItem
+          label="Sign Out"
+          onPress={() => signOut()}
+          labelStyle={{
+            color: colours.text
+          }}
+        />
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+}
+
+function ActivityLoggerExerciseDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="ActivityLoggerExerciseDrawer"
+        component={ActivityLoggerExercise}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
+function ActivityLoggerCalorieDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="ActivityLoggerCalorieDrawer"
+        component={ActivityLoggerCalorie}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -48,6 +125,7 @@ export default function App() {
                 headerShown: false,
               }}
             />
+            
             <Stack.Screen
               name="SetupProfile"
               component={SetupProfile}
@@ -58,7 +136,15 @@ export default function App() {
 
             <Stack.Screen
               name="ActivityLoggerExercise"
-              component={ActivityLoggerExercise}
+              component={ActivityLoggerExerciseDrawer}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="ActivityLoggerCalorie"
+              component={ActivityLoggerCalorieDrawer}
               options={{
                 headerShown: false,
               }}
@@ -73,6 +159,7 @@ export default function App() {
                 headerShown: false,
               }}
             />
+
             <Stack.Screen
               name="Login"
               component={Login}
@@ -80,6 +167,7 @@ export default function App() {
                 headerShown: false,
               }}
             />
+
             <Stack.Screen
               name="Sign Up"
               component={Signup}
@@ -87,6 +175,7 @@ export default function App() {
                 headerShown: false,
               }}
             />
+
             <Stack.Screen
               name="Forgot Password"
               component={ForgotPassword}

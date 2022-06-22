@@ -19,10 +19,9 @@ import TopBar from './TopBar';
 import Style from './Style';
 import Button from "./Button";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { CALORIE_APININJA } from '@env';
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
-import { values, exercises } from '../assets/activities';
-import { CALORIE_APININJA } from '@env';
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -72,6 +71,13 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
     const [foodType, setFoodType] = useState('');
     const [portionSize, setPortionSize] = useState('');
+
+    const activityTypes = ['Exercise', 'Dietary Intake']
+    const units = ['grams', 'bowls', 'cups'];
+    const [portionValue, setPortionValue] = useState('');
+    const [unit, setUnit] = useState('');
+
+    const [activityType, setActivityType] = useState('Dietary Intake');
 
     useEffect(() => {
         mounted.current = true;
@@ -123,31 +129,37 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
             if (!foodType) {
                 throw new Error("Please enter the type of food!")
-            }
-
-            if (!portionSize) {
-                throw new Error("Please enter the portion size!")
+            } else if (!portionValue) {
+                throw new Error("Please enter the portion value!")
+            } else if (!unit) {
+                throw new Error("Please enter the unit value!")
             }
 
             const response = await fetch(
-                'https://api.api-ninjas.com/v1/nutrition?query=' + portionSize + ' ' + foodType, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Api-Key': CALORIE_APININJA
-                    },
-                }
+                'https://api.api-ninjas.com/v1/nutrition?query=' + portionValue + ' ' + unit + ' ' + foodType, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Api-Key': CALORIE_APININJA
+                },
+            }
             );
+
             const json = await response.json();
+
+            if (!json) {
+                throw new Error("Error determining amount of calories!")
+            }
 
             const updates = {
                 id: user.id,
                 listValue: counter,
                 foodType,
-                portionSize,
                 date: dietDate.toISOString(),
                 time: dietTimeText,
-                caloriesAmount: json[0]['calories']
+                caloriesAmount: json[0]['calories'],
+                portionValue,
+                unit,
             };
 
             //console.log(data)
@@ -158,7 +170,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                 .upsert(updates);
 
             if (data) {
-                Alert.alert('Activity successfully added')
+                Alert.alert('Dietary activity successfully added')
                 success = true;
             }
 
@@ -204,10 +216,44 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             <StatusBar />
             <TopBar navigation={navigation} />
             <Text style={styles.header}>
-                Activity Logger (Calorie)
+                Activity Logger
             </Text>
 
             <KeyboardAwareScrollView>
+                {/*Activity Type Field */}
+                <View>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Activity Type</Text>
+
+                    <View style={Style.profileDropdownContainer}>
+                        <SelectDropdown
+                            eByIndex={1}
+                            data={activityTypes}
+                            defaultButtonText={'Select activity type'}
+                            buttonStyle={styles.selection}
+                            buttonTextStyle={Style.dropdownText}
+                            renderDropdownIcon={() => <Entypo
+                                name="chevron-small-down"
+                                size={24}
+                                color={colours.text}
+
+                            />}
+                            dropdownIconPosition="right"
+                            onSelect={(selectedItem, index) => {
+                                if (selectedItem === 'Dietary Intake') {
+                                    setActivityType(selectedItem)
+                                } else {
+                                    navigation.push('ActivityLoggerExercise')
+                                }
+                            }}
+                            buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                            rowTextForSelection={(item, index) => item}
+                            rowStyle={{ backgroundColor: colours.background }}
+                            rowTextStyle={Style.dropdownText}
+                            defaultValue={activityType}
+                        />
+                    </View>
+                </View>
+
                 {/*Type of Food Field */}
                 <View>
                     <Text style={[Style.email, { marginTop: 18 }]}>Type of Food</Text>
@@ -226,21 +272,52 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                     </View>
                 </View>
 
-                {/*Portion Size Field */}
-                <View>
-                    <Text style={[Style.email, { marginTop: 13 }]}>Portion Size</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    {/* Portion Field */}
+                    <View style={{ flex: 1 }}>
+                        <Text style={[Style.email, { marginTop: 18 }]}>Portion Size</Text>
 
-                    {/*Portion Size Rectangle */}
-                    <View style={Style.rect}>
-                        <TextInput
-                            style={[Style.sampleEmail]}
-                            placeholder="e.g. 1 cup / 1 bowl / 100g / 100ml"
-                            placeholderTextColor={colours.text}
-                            value={portionSize}
-                            onChangeText={setPortionSize}
-                            autoCapitalize="none"
-                            returnKeyType="next"
-                        />
+                        <View style={Style.rect}>
+                            <TextInput
+                                style={[Style.sampleEmail]}
+                                keyboardType='number-pad'
+                                placeholder="0"
+                                placeholderTextColor={colours.text}
+                                value={portionValue}
+                                onChangeText={(portionValue) => setPortionValue(portionValue.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
+                                autoCapitalize="none"
+                                returnKeyType="next"
+
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{ flex: 1 }}>
+                        <Text style={[Style.email, { marginTop: 18 }]}>
+                            Unit of measurement
+                        </Text>
+                        <View style={Style.profileDropdownContainer}>
+                            <SelectDropdown
+                                data={units}
+                                defaultButtonText={'Select unit'}
+                                buttonStyle={styles.selection}
+                                buttonTextStyle={Style.dropdownText}
+                                renderDropdownIcon={() => <Entypo
+                                    name="chevron-small-down"
+                                    size={24}
+                                    color={colours.text}
+
+                                />}
+                                dropdownIconPosition="right"
+                                onSelect={(selectedItem, index) => {
+                                    setUnit(selectedItem)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => selectedItem}
+                                rowTextForSelection={(item, index) => item}
+                                rowStyle={{ backgroundColor: colours.background }}
+                                rowTextStyle={Style.dropdownText}
+                            />
+                        </View>
                     </View>
                 </View>
 
