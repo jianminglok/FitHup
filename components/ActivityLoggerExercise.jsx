@@ -320,6 +320,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
             </Text>
 
             <KeyboardAwareScrollView>
+                {/*Activity Type Field */}
                 <View>
                     <Text style={[Style.email, { marginTop: 18 }]}>Activity Type</Text>
 
@@ -354,14 +355,14 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                     </View>
                 </View>
 
+                {/*Exercise Type Field */}
                 <View>
                     <Text style={[Style.email, { marginTop: 18 }]}>Exercise Type</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            data={activities}
-                            defaultValueByIndex={0}
-                            defaultButtonText={'Select activity type'}
+                            data={exercies}
+                            defaultButtonText={'Select exercise type'}
                             buttonStyle={styles.selection}
                             buttonTextStyle={Style.dropdownText}
                             renderDropdownIcon={() => <Entypo
@@ -372,18 +373,12 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                if (selectedItem === 'Exercise') {
-                                    setActivityType(selectedItem)
-                                }
-                                else {
-                                    navigation.push("ActivityLoggerCalorie")
-                                }
+                                setExerciseType(selectedItem)
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
                             rowStyle={{ backgroundColor: colours.background }}
                             rowTextStyle={Style.dropdownText}
-                            search
                         />
                     </View>
                 </View>
