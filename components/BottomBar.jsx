@@ -5,12 +5,77 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Homepage from './Homepage';
 import AddActivityButton from './AddActivityButton';
 import React, { useState, useCallback, useEffect } from "react"
-import { Alert, Image } from 'react-native';
-import SetupProfile from './SetupProfile';
+import { Alert, Image, View, Text } from 'react-native';
 import { supabase } from '../lib/supabase';
-import ActivityLoggerExercise from './ActivityLoggerExercise'
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Style from "./Style";
+import { useDispatch, useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      throw error;
+    } else {
+      navigation.navigate('Launchpage');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function CustomDrawerContent(props) {
+  const dispatch = useDispatch();
+  const { name } = useSelector((state) => state.profile);
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={[Style.header, { backgroundColor: colours.tab }]}>
+        <Text style={[{ color: colours.text, marginLeft: 17, fontSize: 20 }]}>Hi, {name}</Text>
+      </View>
+      <DrawerContentScrollView {...props}>
+        <DrawerItem
+          label="Sign Out"
+          onPress={() => signOut()}
+          labelStyle={{
+            color: colours.text
+          }}
+        />
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+}
+
+function HomepageDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="Homepage"
+        component={Homepage}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
 
 export default function BottomBar({ session, navigation }) {
 
@@ -59,9 +124,10 @@ export default function BottomBar({ session, navigation }) {
           display: "flex"
         },
       }}>
+
       <Tab.Screen
         name="Leaderboard"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -74,9 +140,10 @@ export default function BottomBar({ session, navigation }) {
         }}
         session={session}
       />
+      
       <Tab.Screen
         name="Calories"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           tabBarIcon: ({ focused }) => (
             <Image
@@ -86,26 +153,20 @@ export default function BottomBar({ session, navigation }) {
             />
           )
         }} />
+
       <Tab.Screen
-      
         name="Add Activity"
-        component={ActivityLoggerExercise}
+        component={HomepageDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <Feather
-              name="plus"
-              size={50}
-              color={colours.text}
-            />
-          ),
-          tabBarButton: (props) => (
-            <AddActivityButton {...props} />
+            <AddActivityButton navigation={navigation} />
           )
         }} />
+
       <Tab.Screen
         name="Exercise"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
@@ -115,9 +176,10 @@ export default function BottomBar({ session, navigation }) {
             />
           )
         }} />
+
       <Tab.Screen
         name="Target"
-        component={Homepage}
+        component={HomepageDrawer}
         options={{
           tabBarIcon: ({ focused }) => (
             <Feather

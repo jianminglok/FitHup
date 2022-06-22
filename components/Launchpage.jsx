@@ -41,7 +41,7 @@ export default function Launchpage({ session, navigation }) {
     return () => { mounted.current = false; };
   }, []);
 
-  // Display splash screen while 
+  // Display splash screen while font is loading
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();

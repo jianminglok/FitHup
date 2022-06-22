@@ -1,7 +1,6 @@
 import {
   StatusBar,
   StyleSheet,
-
 } from "react-native";
 import colours from "../assets/colours/colours";
 import { Dimensions } from "react-native";
@@ -137,7 +136,8 @@ const styles = StyleSheet.create({
   topBarProfileIcon: {
     height: 32,
     width: 32,
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    borderRadius: 999,
   },
 
   topBarUsernameText: {
@@ -179,7 +179,6 @@ const styles = StyleSheet.create({
   },
 
   cardTitle: {
-    fontSize: 24,
     fontFamily: "MontserratBold",
     fontWeight: "700",
     color: colours.text,
@@ -211,7 +210,8 @@ const styles = StyleSheet.create({
   },
 
   profileDropdownContainer: {
-    marginHorizontal: 27
+    marginHorizontal: 27,
+    
   },
 
   dropdownText: {
