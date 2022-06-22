@@ -22,6 +22,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import { useDispatch, useSelector } from 'react-redux';
+import { setName } from "../slices/profileSlice";
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -33,6 +35,9 @@ export default SetupProfile = ({ navigation }) => {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
 
+    const dispatch = useDispatch();
+    const { name } = useSelector((state) => state.profile);
+
     state = {
         fontsLoaded: false
     }
@@ -42,8 +47,6 @@ export default SetupProfile = ({ navigation }) => {
 
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false)
-
-    const [name, setName] = useState('');
 
     const [date, setDate] = useState(new Date());
 
@@ -102,7 +105,7 @@ export default SetupProfile = ({ navigation }) => {
                     if (!data.profileSetup) {
                         setEditing(true);
                     }
-                    if (data.name) setName(data.name);
+                    if (data.name) dispatch(setName(data.name));
                     if (data.dateOfBirth) {
                         setDate(new Date(data.dateOfBirth));
                         let tempDate = new Date(data.dateOfBirth);
@@ -124,8 +127,7 @@ export default SetupProfile = ({ navigation }) => {
         prepare();
         //Get saved profile details
         if (mounted.current != false) {
-            
-        getProfile();
+            getProfile();
         }
 
         return () => { mounted.current = false; };
@@ -154,7 +156,7 @@ export default SetupProfile = ({ navigation }) => {
                 profileSetup: true
             };
 
-            
+
 
             const { data, error } = await supabase
                 .from('profiles')
@@ -183,7 +185,7 @@ export default SetupProfile = ({ navigation }) => {
         }
     }
 
-    // Display splash screen while 
+    // Display splash screen while font is loading
     const onLayoutRootView = useCallback(async () => {
         if (appIsReady) {
             await SplashScreen.hideAsync();
@@ -214,7 +216,7 @@ export default SetupProfile = ({ navigation }) => {
                             style={Style.sampleEmail}
                             placeholder="Enter your name"
                             placeholderTextColor={colours.text}
-                            onChangeText={setName}
+                            onChangeText={(text) => dispatch(setName(text))}
                             autoComplete="name"
                             editable={editing}
                             value={name}
