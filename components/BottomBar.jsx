@@ -8,7 +8,8 @@ import React, { useState, useCallback, useEffect } from "react"
 import { Alert, Image } from 'react-native';
 import SetupProfile from './SetupProfile';
 import { supabase } from '../lib/supabase';
-import ActivityLoggerExercise from './ActivityLoggerExercise'
+import ActivityLoggerExercise from './ActivityLoggerExercise';
+import ExerciseLog from './ExerciseLog';
 
 const Tab = createBottomTabNavigator();
 
@@ -105,8 +106,9 @@ export default function BottomBar({ session, navigation }) {
         }} />
       <Tab.Screen
         name="Exercise"
-        component={Homepage}
+        component={ExerciseLog}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="dumbbell"
