@@ -1,50 +1,63 @@
-import { useState, useEffect } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { supabase } from './lib/supabase'
-import Login from './components/Login';
-import Signup from './components/Signup';
-import ForgotPassword from './components/ForgotPassword';
-import Launchpage from './components/Launchpage';
-import Homepage from './components/Homepage';
-import SetupProfile from './components/SetupProfile';
-import BottomBar from './components/BottomBar';
-import ActivityLoggerExercise from './components/ActivityLoggerExercise';
-import 'react-native-url-polyfill/auto'
-import { View, Text, Alert } from 'react-native';
-import 'react-native-gesture-handler';
-import { Provider } from 'react-redux';
-import { store } from './store'
-import ActivityLoggerCalorie from './components/ActivityLoggerCalorie';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
-} from '@react-navigation/drawer';
-import { useDispatch, useSelector } from 'react-redux';
-import colours from './assets/colours/colours';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useState, useEffect } from "react";
+import { View, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Provider, useSelector } from "react-redux";
+
+import colours from "./assets/colours/colours";
+import ActivityLoggerCalorie from "./components/ActivityLoggerCalorie";
+import ActivityLoggerExercise from "./components/ActivityLoggerExercise";
+import BottomBar from "./components/BottomBar";
+import ForgotPassword from "./components/ForgotPassword";
+import Launchpage from "./components/Launchpage";
+import Login from "./components/Login";
+import SetupProfile from "./components/SetupProfile";
+import Signup from "./components/Signup";
 import Style from "./components/Style";
+import { supabase } from "./lib/supabase";
+import "react-native-url-polyfill/auto";
+import "react-native-gesture-handler";
+import { store } from "./store";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
+async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw error;
+    } else {
+      navigation.navigate("Launchpage");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function CustomDrawerContent(props) {
-  const dispatch = useDispatch();
   const { name } = useSelector((state) => state.profile);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={[Style.header, { backgroundColor: colours.tab }]}>
-        <Text style={[{ color: colours.text, marginLeft: 17, fontSize: 20 }]}>Hi, {name}</Text>
+        <Text style={[{ color: colours.text, marginLeft: 17, fontSize: 20 }]}>
+          Hi, {name}
+        </Text>
       </View>
       <DrawerContentScrollView {...props}>
         <DrawerItem
           label="Sign Out"
           onPress={() => signOut()}
           labelStyle={{
-            color: colours.text
+            color: colours.text,
           }}
         />
         <DrawerItemList {...props} />
@@ -56,67 +69,70 @@ function CustomDrawerContent(props) {
 function ActivityLoggerExerciseDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props}
-      />}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerStyle: {
-          backgroundColor: colours.background
+          backgroundColor: colours.background,
         },
-      }}>
+      }}
+    >
       <Drawer.Screen
         name="ActivityLoggerExerciseDrawer"
         component={ActivityLoggerExercise}
         options={{
           headerShown: false,
-          drawerItemStyle: { height: 0 }
-        }} />
-    </Drawer.Navigator >
+          drawerItemStyle: { height: 0 },
+        }}
+      />
+    </Drawer.Navigator>
   );
 }
 
 function ActivityLoggerCalorieDrawer() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props}
-      />}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerStyle: {
-          backgroundColor: colours.background
+          backgroundColor: colours.background,
         },
-      }}>
+      }}
+    >
       <Drawer.Screen
         name="ActivityLoggerCalorieDrawer"
         component={ActivityLoggerCalorie}
         options={{
           headerShown: false,
-          drawerItemStyle: { height: 0 }
-        }} />
-    </Drawer.Navigator >
+          drawerItemStyle: { height: 0 },
+        }}
+      />
+    </Drawer.Navigator>
   );
 }
 
-export default function App() {
+export default function App({ navigation }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    let isMounted = true
+    let isMounted = true;
 
     if (isMounted) {
-      setSession(supabase.auth.session())
+      setSession(supabase.auth.session());
     }
 
     supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
+      setSession(session);
+    });
 
-    return () => { isMounted = false };
-  }, [])
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {session && session.user ?
-
+        {session && session.user ? (
           <Stack.Navigator>
             <Stack.Screen
               name="TabStack"
@@ -125,7 +141,7 @@ export default function App() {
                 headerShown: false,
               }}
             />
-            
+
             <Stack.Screen
               name="SetupProfile"
               component={SetupProfile}
@@ -149,8 +165,8 @@ export default function App() {
                 headerShown: false,
               }}
             />
-          </Stack.Navigator> :
-
+          </Stack.Navigator>
+        ) : (
           <Stack.Navigator>
             <Stack.Screen
               name="Launchpage"
@@ -184,8 +200,8 @@ export default function App() {
               }}
             />
           </Stack.Navigator>
-        }
+        )}
       </NavigationContainer>
     </Provider>
-  )
+  );
 }
