@@ -22,6 +22,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { CALORIE_APININJA } from '@env';
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
+import foodUnits from '../assets/foodUnits';
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -73,7 +74,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
     const [portionSize, setPortionSize] = useState('');
 
     const activityTypes = ['Exercise', 'Dietary Intake']
-    const units = ['grams', 'bowls', 'cups'];
+    const units = foodUnits;
     const [portionValue, setPortionValue] = useState('');
     const [unit, setUnit] = useState('');
 
@@ -136,7 +137,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             }
 
             const response = await fetch(
-                'https://api.api-ninjas.com/v1/nutrition?query=' + portionValue + ' ' + unit + ' ' + foodType, {
+                'https://api.api-ninjas.com/v1/nutrition?query=' + portionValue + unit + ' ' + foodType, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -154,7 +155,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             const updates = {
                 id: user.id,
                 listValue: counter,
-                foodType,
+                foodType : foodType.charAt(0).toUpperCase() + foodType.toLowerCase().slice(1),
                 date: dietDate.toISOString(),
                 time: dietTimeText,
                 caloriesAmount: json[0]['calories'],
@@ -226,7 +227,8 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            eByIndex={1}
+                            
+                            defaultValueByIndex={1}
                             data={activityTypes}
                             defaultButtonText={'Select activity type'}
                             buttonStyle={styles.selection}
@@ -261,12 +263,12 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                     {/*Type of Food Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
+                            autoCapitalize = {'none'}
                             style={[Style.sampleEmail]}
                             placeholder="Enter type of food"
                             placeholderTextColor={colours.text}
                             value={foodType}
                             onChangeText={setFoodType}
-                            autoCapitalize="none"
                             returnKeyType="next"
                         />
                     </View>
@@ -285,7 +287,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                                 placeholderTextColor={colours.text}
                                 value={portionValue}
                                 onChangeText={(portionValue) => setPortionValue(portionValue.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
-                                autoCapitalize="none"
+                                autoCapitalize={'characters'}
                                 returnKeyType="next"
 
                             />

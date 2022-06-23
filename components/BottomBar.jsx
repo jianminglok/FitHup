@@ -16,6 +16,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
+import ExerciseLog from './ExerciseLog';
+import FoodLog from './FoodLog';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -143,8 +145,9 @@ export default function BottomBar({ session, navigation }) {
       
       <Tab.Screen
         name="Calories"
-        component={HomepageDrawer}
+        component={FoodLog}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Image
               source={require("../assets/images/Calorie.png")}
@@ -166,7 +169,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Exercise"
-        component={HomepageDrawer}
+        component={ExerciseLog}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

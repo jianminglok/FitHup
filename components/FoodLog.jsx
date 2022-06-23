@@ -5,7 +5,6 @@ import * as Font from 'expo-font';
 import colours from "../assets/colours/colours";
 import { StyleSheet, StatusBar, Text, View, TouchableOpacity, Button, ScrollView, ActivityIndicator } from "react-native"
 import TopBar from './TopBar';
-import { Dimensions } from "react-native";
 import Style from './Style';
 import Card from './Card';
 
@@ -15,12 +14,12 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function Exercise({ navigation }) {
+export default function Food({ navigation }) {
     const user = supabase.auth.user();
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
     const [loading, setLoading] = useState(false);
-    const [exercises, setExercises] = useState([]);
+    const [food, setFood] = useState([]);
 
 
     useEffect(() => {
@@ -39,21 +38,20 @@ export default function Exercise({ navigation }) {
             }
         }
 
-        async function getUserExercise() {
+        async function getUserDietaryIntake() {
             try {
                 setLoading(true);
                 if (!user) throw new Error("No user on the session!");
 
                 const { data, error } = await supabase
-                    .from('ActivityLoggerExercise')
+                    .from('ActivityLoggerCalorie')
                     .select()
                     .eq("id", user.id)
                     .order('date', { ascending: false })
-                    .order('startTime', { ascending: false })
-                    .order('endTime', { ascending: false })
+                    .order('time', { ascending: false })
 
                 if (data) {
-                    setExercises(data)
+                    setFood(data)
                 } else if (error) {
                     throw error;
                 }
@@ -68,18 +66,18 @@ export default function Exercise({ navigation }) {
 
         prepare();
         if (mounted.current != false) {
-            getUserExercise();
+            getUserDietaryIntake();
         }
 
-        //Subscribe to real time changes to list of exercises performed
-        const exerciseSubscription = supabase
-            .from('ActivityLoggerExercise')
-            .on('*', () => getUserExercise())
+        //Subscribe to real time changes to list of food performed
+        const foodSubscription = supabase
+            .from('ActivityLoggerCalorie')
+            .on('*', () => getUserDietaryIntake())
             .subscribe()
 
         return () => {
             mounted.current = false;
-            supabase.removeSubscription(exerciseSubscription);
+            supabase.removeSubscription(foodSubscription);
         };
     }, [user]);
 
@@ -99,16 +97,16 @@ export default function Exercise({ navigation }) {
             <StatusBar />
             <TopBar navigation={navigation} />
             <Text style={[styles.header, { alignSelf: 'flex-start' }]}>
-                Exercise
+                Dietary Intake
             </Text>
 
             <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
-                {exercises.map((exercise, index) => {
+                {food.map((food, index) => {
                     return (
-                        <Card key={index} cardTitle={exercise.date + '\t\t' + exercise.startTime.slice(0,5) + ' - ' + exercise.endTime.slice(0,5)} titleSize={18} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle={food.date + '\t\t' + food.time.slice(0,5)} titleSize={18} style={{ marginBottom: 19 }}>
                             <View style={{ marginTop: 15 }}>
                                 <Text style={[styles.recommendationTitle]}>
-                                    {exercise.exerciseType + ' - ' + exercise.caloriesAmount + ' cal'}
+                                    {food.foodType + ' (' + food.portionValue + ' ' + food.unit + ')' + ' - ' + food.caloriesAmount + ' cal'}
                                 </Text>
                             </View>
                         </Card>
