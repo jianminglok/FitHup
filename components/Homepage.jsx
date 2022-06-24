@@ -73,10 +73,10 @@ export default function Homepage({ navigation }) {
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar navigation={navigation} />
+            <TopBar testId="homeTopBar" navigation={navigation} />
 
             <ScrollView style={Style.homepageScrollview}>
-                <Card cardTitle="Exercises" titleSize={24}>
+                <Card testId="exCard" cardTitle="Exercises" titleSize={24}>
                     <FontAwesome5
                         name = 'dumbbell'
                         size= {30}
@@ -122,7 +122,7 @@ export default function Homepage({ navigation }) {
                     </View>
                 </Card>
 
-                <Card cardTitle="Calories" style={{ marginVertical: 19 }} titleSize={24}>
+                <Card testId="calCard" cardTitle="Calories" style={{ marginVertical: 19 }} titleSize={24}>
                     <Image
                         source={require("../assets/images/Calorie_red.png")}
                         style ={{width:40, height:40, alignSelf:'center', position:'absolute', resizeMode: 'contain'}}
@@ -167,7 +167,7 @@ export default function Homepage({ navigation }) {
                     </View>
                 </Card>
 
-                <Card cardTitle="Recommendations" style={{ marginBottom: 19 }} titleSize={24}>
+                <Card testId="recCard" cardTitle="Recommendations" style={{ marginBottom: 19 }} titleSize={24}>
                     <View style={{ marginVertical: 15 }}>
                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationTitle}>
                             <View>

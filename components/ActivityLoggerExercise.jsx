@@ -136,7 +136,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
             }
 
             catch (error) {
-                console.log('error')
+                console.log(error)
             }
 
             finally {
@@ -163,7 +163,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                 }
             }
             catch (error) {
-                console.log('error')
+                console.log(error)
             }
             finally {
                 setLoading(false)
@@ -326,6 +326,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
+                            testId="activityField"
                             data={activities}
                             defaultValueByIndex={0}
                             defaultButtonText={'Select activity type'}
@@ -361,6 +362,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
+                            testID="exerciseField"
                             data={exercies}
                             defaultButtonText={'Select exercise type'}
                             buttonStyle={styles.selection}
@@ -398,7 +400,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     {exerciseDateShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testId="dateField"
                             value={exerciseDate}
                             display='default'
                             onChange={onExerciseDateChange}
@@ -420,7 +422,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     {exerciseStartTimeShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testID="startTimeField"
                             value={exerciseStartTime}
                             display='default'
                             mode='time'
@@ -443,7 +445,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
                     {exerciseEndTimeShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testID="endTimeField"
                             value={exerciseEndTime}
                             display='default'
                             mode='time'
@@ -457,6 +459,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                     {/* Calories Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
+                            testID='calorieField'
                             style={[Style.sampleEmail]}
                             keyboardType='number-pad'
                             placeholder="Amount of Calories Burnt"
@@ -472,6 +475,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                 {/* Save Activity button */}
                 <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
                     <Button
+                        testId="saveBtn"
                         title='Save Activity'
                         onPress={() => addActivity()}
                     />

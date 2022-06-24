@@ -22,6 +22,9 @@
     "@react-navigation/native-stack": "^6.6.2",
     "@reduxjs/toolkit": "^1.8.2",
     "@supabase/supabase-js": "^1.35.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/jest-native": "^4.0.5",
+    "@testing-library/react-native": "^10.0.0",
     "expo": "~45.0.0",
     "expo-app-loading": "~2.0.0",
     "expo-asset": "~8.5.0",
@@ -32,7 +35,7 @@
     "expo-splash-screen": "~0.15.1",
     "expo-status-bar": "~1.3.0",
     "expo-updates": "~0.13.2",
-    "jest": "^26.6.3",
+    "jest": "^27.4.4",
     "moment": "^2.29.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -43,6 +46,7 @@
     "react-native-dotenv": "^3.3.1",
     "react-native-dropdown-picker": "^5.4.2",
     "react-native-elements": "^3.4.2",
+    "react-native-error-boundary": "^1.1.13",
     "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-google-fit": "^0.18.3",
@@ -93,7 +97,8 @@
       "tsx"
     ],
     "setupFiles": [
-      "./mock.js"
+      "./mock.js",
+      "<rootDir>/node_modules/core-js"
     ]
   }
 }

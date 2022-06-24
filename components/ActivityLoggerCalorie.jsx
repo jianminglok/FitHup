@@ -227,7 +227,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
-                            
+                            testID="activityField"
                             defaultValueByIndex={1}
                             data={activityTypes}
                             defaultButtonText={'Select activity type'}
@@ -263,6 +263,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                     {/*Type of Food Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
+                            testID='foodField'
                             autoCapitalize = {'none'}
                             style={[Style.sampleEmail]}
                             placeholder="Enter type of food"
@@ -281,6 +282,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
                         <View style={Style.rect}>
                             <TextInput
+                                testID='portionField'
                                 style={[Style.sampleEmail]}
                                 keyboardType='number-pad'
                                 placeholder="0"
@@ -300,6 +302,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                         </Text>
                         <View style={Style.profileDropdownContainer}>
                             <SelectDropdown
+                                testID="unitField"
                                 data={units}
                                 defaultButtonText={'Select unit'}
                                 buttonStyle={styles.selection}
@@ -338,7 +341,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
                     {dietDateShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testID="dateField"
                             value={dietDate}
                             display='default'
                             onChange={onDietDateChange}
@@ -360,7 +363,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
                     {dietTimeShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testID="timeField"
                             value={dietTime}
                             display='default'
                             mode='time'
@@ -371,6 +374,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                 {/* Save Activity button */}
                 <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
                     <Button
+                        testId="saveBtn"
                         title='Save Activity'
                         onPress={() => addActivity()}
                     />
