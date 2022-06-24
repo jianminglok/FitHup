@@ -97,12 +97,12 @@ export default function Exercise({ navigation }) {
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar navigation={navigation} />
-            <Text style={[styles.header, { alignSelf: 'flex-start' }]}>
+            <TopBar testID="logTopBar" navigation={navigation} />
+            <Text testID="title" style={[styles.header, { alignSelf: 'flex-start' }]}>
                 Exercise
             </Text>
 
-            <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
+            <ScrollView testID="logContainer" style={[Style.homepageScrollview, { marginTop: 19 }]}>
                 {exercises.map((exercise, index) => {
                     return (
                         <Card key={index} cardTitle={exercise.date + '\t\t' + exercise.startTime.slice(0,5) + ' - ' + exercise.endTime.slice(0,5)} titleSize={18} style={{ marginBottom: 19 }}>

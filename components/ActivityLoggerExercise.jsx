@@ -241,11 +241,11 @@ export default ActivityLoggerExercise = ({ navigation }) => {
 
 
             if (!exerciseType) {
-                throw new Error("Enter the type of exercise")
+                throw new Error("Please enter the type of exercise!")
             }
 
             if (!caloriesAmount) {
-                throw new Error("Enter the calories amount!")
+                throw new Error("Please enter the calories amount!")
             }
 
             if (caloriesAmount > 1.25 * recommendedCalories) {
