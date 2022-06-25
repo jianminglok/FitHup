@@ -156,12 +156,9 @@ export default SetupProfile = ({ navigation }) => {
                 profileSetup: true
             };
 
-
-
             const { data, error } = await supabase
                 .from('profiles')
                 .upsert(updates, { onConflict: 'id' })
-
 
             if (data) {
                 Alert.alert('Profile successfully updated')
@@ -213,6 +210,7 @@ export default SetupProfile = ({ navigation }) => {
                     {/* Name Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
+                            testId="nameField"
                             style={Style.sampleEmail}
                             placeholder="Enter your name"
                             placeholderTextColor={colours.text}
@@ -239,7 +237,7 @@ export default SetupProfile = ({ navigation }) => {
 
                     {dateShow && (
                         <DateTimePicker
-                            testID="dateTimePicker"
+                            testID="dateField"
                             value={date}
                             display='default'
                             onChange={onChange}
@@ -253,6 +251,7 @@ export default SetupProfile = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
+                            testID="genderField"
                             data={genders}
                             defaultButtonText={'Select gender'}
                             buttonStyle={styles.selection}
@@ -284,6 +283,7 @@ export default SetupProfile = ({ navigation }) => {
                         {/* Height Rectangle */}
                         <View style={[Style.rect, { marginRight: 5 }]}>
                             <TextInput
+                                testID="heightField"
                                 style={[Style.sampleEmail]}
                                 keyboardType='number-pad'
                                 placeholder="Height"
@@ -303,6 +303,7 @@ export default SetupProfile = ({ navigation }) => {
                         {/* Weight Rectangle */}
                         <View style={[Style.rect, { marginLeft: 5 }]}>
                             <TextInput
+                                testID="weightField"
                                 style={Style.sampleEmail}
                                 keyboardType='number-pad'
                                 placeholder="Weight"
@@ -324,6 +325,7 @@ export default SetupProfile = ({ navigation }) => {
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
+                            testId="lifestyleField"
                             data={lifestyles}
                             defaultButtonText={'Select type of lifestyle'}
                             buttonStyle={styles.selection}
@@ -350,6 +352,7 @@ export default SetupProfile = ({ navigation }) => {
                 {/* Save Profile button */}
                 <View style={[Style.loginOrSignUpButton, { marginVertical: 20 }]}>
                     <Button
+                        testID="saveProfileBtn"
                         title={editing ? "Save Profile" : 'Edit Profile'}
                         onPress={() => editing ? updateProfile() : setEditing(true)}
                     />

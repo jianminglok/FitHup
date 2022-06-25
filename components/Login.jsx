@@ -84,6 +84,7 @@ export default Login = ({ navigation }) => {
             <MailIcon />
 
             <TextInput
+              testId="loginEmail"
               style={Style.sampleEmail}
               placeholder="Enter your email"
               placeholderTextColor={colours.text}
@@ -105,6 +106,7 @@ export default Login = ({ navigation }) => {
             {/*Lock icon */}
             <LockIcon />
             <TextInput
+              testID="loginPassword"
               style={Style.samplePassword}
               placeholder="Enter your password"
               placeholderTextColor={colours.text}
@@ -129,14 +131,14 @@ export default Login = ({ navigation }) => {
         {/*Rememeber Me Field */}
         <View >
           <TouchableOpacity onPress={() => navigation.navigate("Forgot Password")}>
-            <Text style={styles.forgotpw}>Forgot Password?</Text>
+            <Text testId="forgotPassword" style={styles.forgotpw}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
 
         <View style={[Style.loginOrSignUpButtonContainer]}>
           {/*Log in button*/}
           <View style={[Style.loginOrSignUpButton]}>
-            <Button title={"Login"} onPress={signInWithEmail} />
+            <Button testId="loginButton" title={"Login"} onPress={signInWithEmail} />
           </View>
 
           {/*Create account */}
@@ -144,7 +146,7 @@ export default Login = ({ navigation }) => {
             <Text style={[Style.account]}>Don't have an account?</Text>
 
             <TouchableOpacity onPress={() => navigation.navigate("Sign Up")}>
-              <Text style={[Style.signUpOrLogin]}>Create one now</Text>
+              <Text testId="createAccTxt" style={[Style.signUpOrLogin]}>Create one now</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -64,11 +64,12 @@ export default function Launchpage({ session, navigation }) {
       <Text style={styles.name}>FitHup</Text>
       <View style={{}}>
         <View style={[Style.loginOrSignUpButton, { marginTop: 10 }]}>
-          <Button title={"Login"} onPress={() => navigation.navigate("Login")} />
+          <Button testId="launchLoginButton" title={"Login"} onPress={() => navigation.navigate("Login")} />
         </View>
 
         <View style={[Style.loginOrSignUpButton, { marginTop: 20, marginBottom: 40, }]}>
           <Button
+            testId="launchSignupButton"
             title={"Sign Up"}
             onPress={() => navigation.navigate("Sign Up")}
           />

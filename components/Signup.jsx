@@ -17,6 +17,7 @@ import MailIcon from "./MailIcon";
 import LockIcon from "./LockIcon";
 import EyeIcon from "./EyeIcon";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Button from './Button';
 
 export default Signup = ({ navigation }) => {
 
@@ -35,6 +36,7 @@ export default Signup = ({ navigation }) => {
     /*Password*/
   }
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   {
     /*Eye icon */
@@ -50,6 +52,10 @@ export default Signup = ({ navigation }) => {
   async function signUpWithEmail() {
     try {
       setLoading(true);
+
+      if (password != confirmPassword) {
+        throw new Error("Passwords do not match")
+      }
 
       const { user, error } = await supabase.auth.signUp({
         email: email,
@@ -78,11 +84,11 @@ export default Signup = ({ navigation }) => {
       </SafeAreaView>
 
       {/*Body */}
-      <KeyboardAwareScrollView 
-        style={Style.body} 
+      <KeyboardAwareScrollView
+        style={Style.body}
         resetScrollToCoords={{ x: 0, y: 0 }}
-        scrollEnabled={true} 
-        contentContainerStyle={{flexGrow: 1}} >
+        scrollEnabled={true}
+        contentContainerStyle={{ flexGrow: 1 }} >
         {/*Email Field */}
         <View>
           <Text style={Style.email}>Email address</Text>
@@ -91,6 +97,7 @@ export default Signup = ({ navigation }) => {
             {/* Mail icon */}
             <MailIcon />
             <TextInput
+              testId="signUpEmail"
               style={Style.sampleEmail}
               placeholder="Enter your email"
               placeholderTextColor={colours.text}
@@ -112,6 +119,7 @@ export default Signup = ({ navigation }) => {
             {/*Lock icon */}
             <LockIcon />
             <TextInput
+              testID="signUpPassword"
               style={Style.samplePassword}
               placeholder="Enter your password"
               placeholderTextColor={colours.text}
@@ -149,11 +157,14 @@ export default Signup = ({ navigation }) => {
               style={Style.icon}
             />
             <TextInput
+              testID="signUpConfirmPassword"
               style={Style.samplePassword}
-              placeholder="Enter your password"
+              placeholder="Enter your password again"
               placeholderTextColor={colours.text}
               secureTextEntry={!showConfirmPassword}
               ref={confirmPasswordInput}
+              onChangeText={setConfirmPassword}
+              value={confirmPassword}
             />
 
             {/* Eye icon */}
@@ -172,6 +183,7 @@ export default Signup = ({ navigation }) => {
           {/*Sign up button*/}
           <View style={[Style.loginOrSignUpButton]}>
             <Button
+              testId="signUpButton"
               title={"Sign Up"}
               onPress={() => signUpWithEmail()}
             />
@@ -181,7 +193,7 @@ export default Signup = ({ navigation }) => {
           <View style={Style.signUpOrLoginContainer}>
             <Text style={[Style.account]}>Already have an account?</Text>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={[Style.signUpOrLogin]}>Log in</Text>
+              <Text testId="loginButton" style={[Style.signUpOrLogin]}>Log in</Text>
             </TouchableOpacity>
           </View>
         </View>

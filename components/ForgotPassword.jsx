@@ -14,7 +14,8 @@ import colours from "../assets/colours/colours";
 import { useFonts } from "expo-font";
 import Style from "./Style";
 import MailIcon from "./MailIcon";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Button from './Button';
 
 export default ForgotPassword = ({ navigation }) => {
   const [loaded] = useFonts({
@@ -57,11 +58,11 @@ export default ForgotPassword = ({ navigation }) => {
       </SafeAreaView>
 
       {/*Body */}
-      <KeyboardAwareScrollView 
-        style={Style.body} 
+      <KeyboardAwareScrollView
+        style={Style.body}
         resetScrollToCoords={{ x: 0, y: 0 }}
-        scrollEnabled={true} 
-        contentContainerStyle={{flexGrow: 1}} >
+        scrollEnabled={true}
+        contentContainerStyle={{ flexGrow: 1 }} >
         {/*Email Field */}
         <View>
           <Text style={Style.email}>Email address</Text>
@@ -71,6 +72,7 @@ export default ForgotPassword = ({ navigation }) => {
             {/* Mail icon */}
             <MailIcon />
             <TextInput
+              testID="forgotPwdEmail"
               style={Style.sampleEmail}
               placeholder="Enter your email"
               placeholderTextColor={colours.text}
@@ -90,6 +92,7 @@ export default ForgotPassword = ({ navigation }) => {
           {/*Continue button*/}
           <View style={[Style.loginOrSignUpButton]}>
             <Button
+              testID="forgotPwdBtn"
               title={"Continue"}
               disabled={loading}
               onPress={() => sendResetEmail()}
@@ -103,7 +106,7 @@ export default ForgotPassword = ({ navigation }) => {
             </Text>
 
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={[Style.signUpOrLogin]}>
+              <Text testID="loginBtn" style={[Style.signUpOrLogin]}>
                 Log in
               </Text>
             </TouchableOpacity>

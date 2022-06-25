@@ -95,12 +95,12 @@ export default function Food({ navigation }) {
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar navigation={navigation} />
-            <Text style={[styles.header, { alignSelf: 'flex-start' }]}>
+            <TopBar testID="logTopBar" navigation={navigation} />
+            <Text testID='title' style={[styles.header, { alignSelf: 'flex-start' }]}>
                 Dietary Intake
             </Text>
 
-            <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
+            <ScrollView testID='logContainer' style={[Style.homepageScrollview, { marginTop: 19 }]}>
                 {food.map((food, index) => {
                     return (
                         <Card key={index} cardTitle={food.date + '\t\t' + food.time.slice(0,5)} titleSize={18} style={{ marginBottom: 19 }}>

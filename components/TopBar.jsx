@@ -35,6 +35,7 @@ export default function TopBar({ navigation }) {
                 dispatch(setProfilePic(base64data));
             }
         } catch (error) {
+            console.log(error)
             Alert.alert('Error retrieving image: ', error.message)
         }
     }
@@ -62,6 +63,7 @@ export default function TopBar({ navigation }) {
                     if (data.profilePic) downloadImage(data.profilePic);
                 }
             } catch (error) {
+                console.log(error)
                 Alert.alert((error).message);
             } finally {
                 setLoading(false);
