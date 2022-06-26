@@ -43,7 +43,7 @@ export default SetupProfile = ({ navigation }) => {
     }
 
     const genders = ['Male', 'Female', 'Prefer not to say']
-    const lifestyles = ['Sedentary', 'Moderately Active', 'Active', 'Highly Active']
+    const lifestyles = ['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Extra Active']
 
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false)
