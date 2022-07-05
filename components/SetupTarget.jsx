@@ -191,7 +191,8 @@ export default SetupTarget = ({ navigation }) => {
                 targetType,
                 targetWeight,
                 caloriesIntakeAmount: parseInt(caloriesIntakeAmount),
-                caloriesBurntAmount: parseInt(caloriesBurntAmount)
+                caloriesBurntAmount: parseInt(caloriesBurntAmount),
+                recommendedCaloriesIntakeAmount: recommendedCaloriesIntake
             };
 
             const { data, error } = await supabase

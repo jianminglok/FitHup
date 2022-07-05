@@ -18,7 +18,6 @@ import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
 import ExerciseLog from './ExerciseLog';
 import FoodLog from './FoodLog';
-import Leaderboard from './Leaderboard';
 import SetupTarget from './SetupTarget';
 
 const Tab = createBottomTabNavigator();
@@ -123,27 +122,6 @@ function ExerciseLogDrawer() {
   );
 }
 
-function LeaderboardDrawer() {
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props}
-      />}
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: colours.background
-        },
-      }}>
-      <Drawer.Screen
-        name="LeaderboardDrawer"
-        component={Leaderboard}
-        options={{
-          headerShown: false,
-          drawerItemStyle: { height: 0 }
-        }} />
-    </Drawer.Navigator >
-  );
-}
-
 function SetupTargetDrawer() {
   return (
     <Drawer.Navigator
@@ -215,7 +193,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Leaderboard"
-        component={LeaderboardDrawer}
+        component={Homepage}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
