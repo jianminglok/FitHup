@@ -18,6 +18,8 @@ import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
 import ExerciseLog from './ExerciseLog';
 import FoodLog from './FoodLog';
+import Target from './Target';
+import Leaderboard from './Leaderboard';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -183,8 +185,9 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Target"
-        component={HomepageDrawer}
+        component={Target}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Feather
               name="target"
