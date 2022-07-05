@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabase";
 import MenuIcon from "./MenuIcon";
 import Style from './Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { setName, setProfilePic } from "../slices/profileSlice";
+import { setName, setGender, setWeight, setHeight, setWeightTargets, setProfilePic, setLifestyleType, setDateOfBirth } from "../slices/profileSlice";
 import { DrawerActions } from "@react-navigation/native";
 
 export default function TopBar({ navigation }) {
@@ -17,7 +17,7 @@ export default function TopBar({ navigation }) {
     }
 
     const dispatch = useDispatch();
-    const { name, profilePic } = useSelector((state) => state.profile);
+    const { name, profilePic, BMI } = useSelector((state) => state.profile);
 
     const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,7 @@ export default function TopBar({ navigation }) {
 
                 let { data, error, status } = await supabase
                     .from("profiles")
-                    .select(`name, profilePic`)
+                    .select(`name, dateOfBirth, gender, weight, height, profilePic, lifestyleType`)
                     .eq("id", user.id)
                     .single();
                 if (error && status !== 406) {
@@ -60,7 +60,21 @@ export default function TopBar({ navigation }) {
 
                 if (data) {
                     if (data.name) dispatch(setName(data.name));
+                    if (data.dateOfBirth) dispatch(setDateOfBirth(data.dateOfBirth));
+                    if (data.gender) dispatch(setGender(data.gender));
                     if (data.profilePic) downloadImage(data.profilePic);
+                    if (data.weight) dispatch(setWeight(data.weight.toString()));
+                    if (data.height) dispatch(setHeight(data.height.toString()));
+                    if (data.weight && data.height) {
+                        if (BMI < 18.5) {
+                            dispatch(setWeightTargets(['Gain Weight']));
+                        } else if (BMI > 24.9) {
+                            dispatch(setWeightTargets(['Lose Weight']));
+                        } else {
+                            dispatch(setWeightTargets(['Maintain Weight', 'Lose Weight', 'Gain Weight']));
+                        }
+                    }
+                    if (data.lifestyleType) dispatch(setLifestyleType(data.lifestyleType));
                 }
             } catch (error) {
                 console.log(error)

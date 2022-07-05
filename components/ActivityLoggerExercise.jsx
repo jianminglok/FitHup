@@ -493,8 +493,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginTop: 19,
         marginLeft: 27
-
-
     },
 
     selection: {
