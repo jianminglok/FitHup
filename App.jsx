@@ -29,7 +29,7 @@ import { store } from "./store";
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-async function signOut() {
+export async function signOut() {
   try {
     const { error } = await supabase.auth.signOut();
     if (error) {

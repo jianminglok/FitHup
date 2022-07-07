@@ -18,6 +18,8 @@ import Style from "./Style";
 import { useDispatch, useSelector } from 'react-redux';
 import ExerciseLog from './ExerciseLog';
 import FoodLog from './FoodLog';
+import SetupTarget from './SetupTarget';
+import Leaderboard from './Leaderboard';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -79,6 +81,69 @@ function HomepageDrawer() {
   );
 }
 
+function FoodLogDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="FoodLog"
+        component={FoodLog}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
+function ExerciseLogDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="ExerciseLogDrawer"
+        component={ExerciseLog}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
+function SetupTargetDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="SetupTargetDrawer"
+        component={SetupTarget}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
 export default function BottomBar({ session, navigation }) {
 
   const [appIsReady, setAppIsReady] = useState(false);
@@ -129,7 +194,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Leaderboard"
-        component={HomepageDrawer}
+        component={Homepage}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -145,7 +210,7 @@ export default function BottomBar({ session, navigation }) {
       
       <Tab.Screen
         name="Calories"
-        component={FoodLog}
+        component={FoodLogDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -169,7 +234,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Exercise"
-        component={ExerciseLog}
+        component={ExerciseLogDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -183,8 +248,9 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Target"
-        component={HomepageDrawer}
+        component={SetupTargetDrawer}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Feather
               name="target"

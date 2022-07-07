@@ -38,7 +38,6 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
     const [counter, setCounter] = useState(0);
-    //const [googleAuth, setGoogleAuth] = useState(false);
     const [weight, setWeight] = useState(0.0)
     const [loading, setLoading] = useState(false);
 
@@ -108,7 +107,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                     .eq("id", user.id)
                 setCounter(count + 1)
             } catch (error) {
-                console.log('error')
+                console.log(error)
             } finally {
                 setLoading(false)
             }
@@ -187,19 +186,6 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             }
         }
     }
-
-    // let opt = {
-    //     startDate: "2017-01-01T00:00:17.971Z",
-    //     endDate: new Date().toISOString(),
-    //     //bucketUnit: BucketUnit.DAY,
-    //     bucketInterval: 1,
-    // };
-
-    // async function fetchData() {
-    //     const res = await GoogleFit.getActivitySamples(opt)
-    //     console.log(res);
-
-    // };
 
     // Display splash screen while font is loading
     const onLayoutRootView = useCallback(async () => {

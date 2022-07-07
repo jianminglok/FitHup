@@ -23,7 +23,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { useDispatch, useSelector } from 'react-redux';
-import { setName } from "../slices/profileSlice";
+import { setName, setDateOfBirth, setGender, setHeight, setWeight, setWeightTargets, setLifestyleType } from "../slices/profileSlice";
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -36,7 +36,7 @@ export default SetupProfile = ({ navigation }) => {
     const mounted = useRef(false);
 
     const dispatch = useDispatch();
-    const { name } = useSelector((state) => state.profile);
+    const { name, dateOfBirth, gender, weight, height, BMI, weightTargets, lifestyleType } = useSelector((state) => state.profile);
 
     state = {
         fontsLoaded: false
@@ -48,25 +48,18 @@ export default SetupProfile = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false)
 
-    const [date, setDate] = useState(new Date());
-
     const [dateShow, setDateShow] = useState(false);
     const [dateText, setDateText] = useState('DD/MM/YYYY');
 
     const onChange = (event, selectedDate) => {
         setDateShow(false);
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
+        const currentDate = selectedDate;
+        dispatch(setDateOfBirth(currentDate.toISOString()));
         let tempDate = new Date(currentDate);
         //Convert date to a readable format
         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
         setDateText(fDate);
     }
-
-    const [gender, setGender] = useState('');
-    const [height, setHeight] = useState('');
-    const [weight, setWeight] = useState('');
-    const [lifestyle, setLifestyle] = useState('');
 
     const profileWeightInput = useRef();
 
@@ -107,15 +100,24 @@ export default SetupProfile = ({ navigation }) => {
                     }
                     if (data.name) dispatch(setName(data.name));
                     if (data.dateOfBirth) {
-                        setDate(new Date(data.dateOfBirth));
+                        dispatch(setDateOfBirth(data.dateOfBirth));
                         let tempDate = new Date(data.dateOfBirth);
                         let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
                         setDateText(fDate);
                     }
-                    if (data.gender) setGender(data.gender);
-                    if (data.height) setHeight(data.height.toString());
-                    if (data.weight) setWeight(data.weight.toString());
-                    if (data.lifestyleType) setLifestyle(data.lifestyleType);
+                    if (data.gender) dispatch(setGender(data.gender));
+                    if (data.height) dispatch(setHeight(data.height.toString()));
+                    if (data.weight) dispatch(setWeight(data.weight.toString()));
+                    if (data.lifestyleType) dispatch(setLifestyleType(data.lifestyleType));
+                    if (data.weight && data.height) {
+                        if (BMI < 18.5) {
+                            dispatch(setWeightTargets(['Gain Weight']));
+                        } else if (BMI > 24.9) {
+                            dispatch(setWeightTargets(['Lose Weight']));
+                        } else {
+                            dispatch(setWeightTargets(['Maintain Weight', 'Lose Weight', 'Gain Weight']));
+                        }
+                    }
                 }
             } catch (error) {
                 Alert.alert((error).message);
@@ -141,18 +143,30 @@ export default SetupProfile = ({ navigation }) => {
             const user = supabase.auth.user();
             if (!user) throw new Error("No user on the session!");
 
+            if (!gender) {
+                throw new Error('Gender is required!')
+            }
+
+            if (!height) {
+                throw new Error('Height is required!')
+            }
+
             if (!weight) {
                 throw new Error('Weight is required!')
+            }
+
+            if (!lifestyleType) {
+                throw new Error('Lifestyle type is required!')
             }
 
             const updates = {
                 id: user.id,
                 name,
-                dateOfBirth: date.toISOString(),
+                dateOfBirth: dateOfBirth,
                 gender,
                 height: parseFloat(height),
                 weight: parseFloat(weight),
-                lifestyleType: lifestyle,
+                lifestyleType: lifestyleType,
                 profileSetup: true
             };
 
@@ -161,7 +175,16 @@ export default SetupProfile = ({ navigation }) => {
                 .upsert(updates, { onConflict: 'id' })
 
             if (data) {
-                Alert.alert('Profile successfully updated')
+                Alert.alert('Profile successfully updated');
+                if (weight && height) {
+                    if (BMI < 18.5) {
+                        dispatch(setWeightTargets(['Gain Weight']));
+                    } else if (BMI > 24.9) {
+                        dispatch(setWeightTargets(['Lose Weight']));
+                    } else {
+                        dispatch(setWeightTargets(['Maintain Weight', 'Lose Weight', 'Gain Weight']));
+                    }
+                }
                 success = true;
             }
 
@@ -238,7 +261,7 @@ export default SetupProfile = ({ navigation }) => {
                     {dateShow && (
                         <DateTimePicker
                             testID="dateField"
-                            value={date}
+                            value={new Date(dateOfBirth)}
                             display='default'
                             onChange={onChange}
                             disabled={!editing}
@@ -264,7 +287,7 @@ export default SetupProfile = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setGender(selectedItem)
+                                dispatch(setGender(selectedItem))
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
@@ -289,7 +312,9 @@ export default SetupProfile = ({ navigation }) => {
                                 placeholder="Height"
                                 placeholderTextColor={colours.text}
                                 value={height}
-                                onChangeText={(height) => setHeight(height.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
+                                onChangeText={(height) => {
+                                    dispatch(setHeight(height.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, '')))
+                                }}
                                 autoCapitalize="none"
                                 onSubmitEditing={() => { profileWeightInput.current.focus() }}
                                 returnKeyType="next"
@@ -309,7 +334,9 @@ export default SetupProfile = ({ navigation }) => {
                                 placeholder="Weight"
                                 value={weight}
                                 placeholderTextColor={colours.text}
-                                onChangeText={(weight) => setWeight(weight.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, ''))}
+                                onChangeText={(weight) => {
+                                    dispatch(setWeight(weight.replace(/[- #*;,<>\{\}\[\]\\\/]/gi, '')))
+                                }}
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 ref={profileWeightInput}
@@ -337,14 +364,14 @@ export default SetupProfile = ({ navigation }) => {
                             />}
                             dropdownIconPosition="right"
                             onSelect={(selectedItem, index) => {
-                                setLifestyle(selectedItem)
+                                dispatch(setLifestyleType(selectedItem))
                             }}
                             buttonTextAfterSelection={(selectedItem, index) => selectedItem}
                             rowTextForSelection={(item, index) => item}
                             rowStyle={{ backgroundColor: colours.background }}
                             rowTextStyle={Style.dropdownText}
                             disabled={!editing}
-                            defaultValue={lifestyle}
+                            defaultValue={lifestyleType}
                         />
                     </View>
                 </View>
