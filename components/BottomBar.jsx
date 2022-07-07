@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ExerciseLog from './ExerciseLog';
 import FoodLog from './FoodLog';
 import SetupTarget from './SetupTarget';
+import Leaderboard from './Leaderboard';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();

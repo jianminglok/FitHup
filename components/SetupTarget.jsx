@@ -59,7 +59,7 @@ export default SetupTarget = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [recommendedCaloriesIntake, setRecommendedCaloriesIntake] = useState(0);
 
-    const weights = ['0.25kg per week', '0.5kg per week']
+    const weights = ['(Mild) 0.25kg per week', '(Moderate) 0.5kg per week', '(Extreme) 1.0kg per week' ]
 
     const computeCalIntake = (targetType, targetWeight) => {
         //Calculate BMR according to gender
@@ -85,16 +85,20 @@ export default SetupTarget = ({ navigation }) => {
 
         //Calculate final TDEE based on target type
         if (targetType == "Gain Weight") {
-            if (targetWeight == "0.5kg per week") {
+            if (targetWeight == "(Moderate) 0.5kg per week") {
                 TDEE += 500;
-            } else if (targetWeight == "0.25kg per week") {
+            } else if (targetWeight == "(Mild) 0.25kg per week") {
                 TDEE += 250;
+            } else if (targetWeight == "(Extreme) 1.0kg per week") {
+                TDEE += 1000;
             }
         } else if (targetType == "Lose Weight") {
-            if (targetWeight == "0.5kg per week") {
+            if (targetWeight == "(Moderate) 0.5kg per week") {
                 TDEE -= 500;
-            } else if (targetWeight == "0.25kg per week") {
+            } else if (targetWeight == "(Mild) 0.25kg per week") {
                 TDEE -= 250;
+            } else if (targetWeight == "(Extreme) 1.0kg per week") {
+                TDEE -= 1000;
             }
         }
 
@@ -179,7 +183,7 @@ export default SetupTarget = ({ navigation }) => {
             }
 
             if (parseInt(caloriesIntakeAmount) < 1500) {
-                throw new Error("The value of calories intake is too low")
+                throw new Error("The value of calories intake is too low and is not recommended")
             }
 
             if (parseInt(caloriesIntakeAmount) > 1.25 * recommendedCaloriesIntake) {
@@ -239,7 +243,7 @@ export default SetupTarget = ({ navigation }) => {
             <KeyboardAwareScrollView>
                 {/*Target Type Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 18 }]}>Target Type</Text>
+                    <Text style={[Style.email, { marginTop: 18 }]}>Type of Target</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
@@ -274,7 +278,7 @@ export default SetupTarget = ({ navigation }) => {
 
                 {/*Target Weight Field */}
                 <View display={targetType == "Maintain Weight" ? "none" : "flex"}>
-                    <Text style={[Style.email, { marginTop: 13 }]}>Target Weight</Text>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Amount of Weight Loss / Gain</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown
@@ -305,7 +309,7 @@ export default SetupTarget = ({ navigation }) => {
 
                 {/*Calorie Intake Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 13 }]}>Target Calorie Intake (cal)</Text>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Target Daily Calorie Intake (cal)</Text>
                     {/* Calories Intake Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
@@ -324,7 +328,7 @@ export default SetupTarget = ({ navigation }) => {
 
                 {/*Calorie Burnt Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 13 }]}>Target Calorie Burnt (cal)</Text>
+                    <Text style={[Style.email, { marginTop: 13 }]}>Target Daily Calorie Output (cal)</Text>
                     {/* Calories Burnt Rectangle */}
                     <View style={Style.rect}>
                         <TextInput
