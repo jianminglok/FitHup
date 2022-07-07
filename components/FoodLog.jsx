@@ -57,7 +57,7 @@ export default function Food({ navigation }) {
                 }
             }
             catch (error) {
-                console.warn('error')
+                console.log(error)
             }
             finally {
                 setLoading(false)

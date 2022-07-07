@@ -107,7 +107,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
                     .eq("id", user.id)
                 setCounter(count + 1)
             } catch (error) {
-                console.log('error')
+                console.log(error)
             } finally {
                 setLoading(false)
             }
