@@ -147,7 +147,7 @@ export default function BottomBar({ session, navigation }) {
       
       <Tab.Screen
         name="Calories"
-        component={FoodLog}
+        component={Leaderboard}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

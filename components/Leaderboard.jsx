@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import colours from "../assets/colours/colours";
 import {
     Alert,
+    Image,
     Platform,
     Pressable,
     ScrollView,
@@ -16,6 +17,8 @@ import {
 } from "react-native";
 import * as Font from 'expo-font';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useDispatch, useSelector } from 'react-redux';
+import { setName, setProfilePic } from "../slices/profileSlice";
 import TopBar from './TopBar';
 import Style from './Style';
 import Button from "./Button";
@@ -23,6 +26,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from "react-native-select-dropdown";
 import Entypo from "react-native-vector-icons/Entypo";
 import Card from './Card';
+import sortDict from '../assets/sortDict';
+import pointsForCalorieIntake from '../assets/pointsForCalorieIntake';
+
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -35,11 +41,33 @@ export default function Leaderboard  ({ navigation }) {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
     const [loading, setLoading] = useState(false);
-    const [profile, setProfile] = useState([]);
-    const [gender, setGender] = useState();
-    const [exercise, setExercise] = useState()
-    
+    const [target, setTarget] = useState();
+    const [exerciseRanking, setExerciseRanking] = useState([]);
+    const [foodRanking, setFoodRanking] = useState([]);
+    const [userRanking, setUserRanking] = useState();
+    const [userPoints, setUserPoints] = useState();
 
+    const dispatch = useDispatch();
+    const { name, profilePic } = useSelector((state) => state.profile);
+    
+    const downloadImage = async (path) => {
+        try {
+            const { data, error } = await supabase.storage.from('avatars').download(path)
+            if (error) {
+                throw error
+            }
+
+            const fileReaderInstance = new FileReader();
+            fileReaderInstance.readAsDataURL(data);
+            fileReaderInstance.onload = () => {
+                let base64data = fileReaderInstance.result;
+                dispatch(setProfilePic(base64data));
+            }
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Error retrieving image: ', error.message)
+        }
+    }
 
     useEffect(() => {
         mounted.current = true;
@@ -57,22 +85,46 @@ export default function Leaderboard  ({ navigation }) {
             }
         }
 
-        async function getProfile() {
+        const getProfile = async () => {
+            try {
+                setLoading(true);
+                const user = supabase.auth.user();
+                if (!user) throw new Error("No user on the session!");
+
+                let { data, error, status } = await supabase
+                    .from("profiles")
+                    .select(`name, profilePic`)
+                    .eq("id", user.id)
+                    .single();
+                if (error && status !== 406) {
+                    throw error;
+                }
+
+                if (data) {
+                    if (data.name) dispatch(setName(data.name));
+                    if (data.profilePic) downloadImage(data.profilePic);
+                }
+            } catch (error) {
+                console.log(error)
+                Alert.alert((error).message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function getTarget() {
             try {
                 setLoading(true);
                 if (!user) throw new Error("No user on the session!");
 
                 const { data, error } = await supabase
-                    .from('profiles')
-                    .select('gender')
+                    .from('target')
+                    .select('targetType')
                     .eq('id', user.id)
                     
 
                 if (data) {
-                    //console.log(data)
-                    setProfile(data)
-                    //console.log(data[0]['gender'])
-                    setGender(data[0]['gender'])
+                    setTarget(data[0]['targetType'])
                 } else if (error) {
                     throw error;
                 }
@@ -89,32 +141,44 @@ export default function Leaderboard  ({ navigation }) {
             try {
                 setLoading(true);
                 if (!user) throw new Error("No user on the session!");
+
                 let today = new Date();
                 today.setUTCHours(0, 0, 0, 0);
                 let tmr = new Date();
-                tmr.setDate(tmr.getDate()+1);
+                tmr.setDate(tmr.getDate() + 1);
                 tmr.setUTCHours(0, 0, 0, 0);
+
                 const { data, error } = await supabase
                     .from('ActivityLoggerExercise')
-                    .select('caloriesAmount, id')
-                    //.eq('id', user.id)
+                    .select(`caloriesAmount, id(name), userId(targetType)`)
                     .gte('date', today.toISOString())
                     .lt('date', tmr.toISOString())
                     
-                
                 if (data) {
+                    
                     const dict = {}
                     for (let i=0; i<data.length; i++) {
-                        let key = data[i]['id']
-                        if (key in dict) {
-                            dict[key] += parseFloat(data[i]['caloriesAmount'])
-                        } else {
-                            dict[key] = parseFloat(data[i]['caloriesAmount'])
+                        if (data[i]['userId']['targetType'] === 'Maintain Weight') {
+                            let key = data[i]['id']['name']
+                            if (key in dict) {
+                                dict[key] += parseFloat(data[i]['caloriesAmount'])
+                            } else {
+                                dict[key] = parseFloat(data[i]['caloriesAmount'])
+                            }
                         }
                     }
-                    //console.log(typeof(data[0]['caloriesAmount']))
-                    console.log(dict)
-                    //console.log(data)
+                    
+                    let results = sortDict(dict,name);
+
+                    setExerciseRanking(results[0]);
+                    setUserRanking(results[1]);
+                    setUserPoints(results[2]);
+                    
+                    // setExerciseRanking(sortDict(dict, name)[0]);
+                    // setUserRanking(sortDict(dict, name)[1]);
+                    //console.log(sortDict(dict));
+
+                
                 } else if (error) {
                     throw error;
                 }
@@ -126,10 +190,72 @@ export default function Leaderboard  ({ navigation }) {
                 setLoading(false)
             }
         }
+
+
+        async function getDietaryIntake() {
+            try {
+                setLoading(true);
+                if (!user) throw new Error("No user on the session!");
+
+                let today = new Date();
+                today.setUTCHours(0, 0, 0, 0);
+                let tmr = new Date();
+                tmr.setDate(tmr.getDate() + 1);
+                tmr.setUTCHours(0, 0, 0, 0);
+
+                const { data, error } = await supabase
+                    .from('ActivityLoggerCalorie')
+                    .select(`caloriesAmount, id(name), userId(targetType,recommendedCaloriesIntakeAmount)`)
+                    .gte('date', today.toISOString())
+                    .lt('date', tmr.toISOString())          
+    
+                if (data) {
+                    //console.log(data)
+                    const dict = {}
+                    for (let i=0; i<data.length; i++) {
+
+                        if (data[i]['userId']['targetType'] !== 'Maintain Weight') {
+                            let key = data[i]['id']['name']
+                            if (key in dict) {
+                                dict[key][0] += parseFloat(data[i]['caloriesAmount'])
+                            } else {
+                                let arr=[];
+                                arr[0] = parseFloat(data[i]['caloriesAmount']);
+                                arr[1] = data[i]['userId']['targetType'];
+                                arr[2] = data[i]['userId']['recommendedCaloriesIntakeAmount'];
+                                dict[key] = arr;
+                            }
+                        }
+                    }
+                    
+                   
+                    pointsForCalorieIntake(dict);
+
+                    let results = sortDict(dict,name);
+                    setFoodRanking(results[0]);
+                    setUserRanking(results[1]);
+                    setUserPoints(results[2]);
+                    
+                
+                } else if (error) {
+                    throw error;
+                }
+            }
+            catch (error) {
+                console.log('error3')
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+
+
         prepare();
         if (mounted.current != false) {
             getProfile();
+            getTarget();
             getExercise();
+            getDietaryIntake();
         }
 
 
@@ -158,14 +284,24 @@ export default function Leaderboard  ({ navigation }) {
                 Leaderboard
             </Text>
 
-            {gender === "Male"?
+            <Image
+                    style={Style.topBarProfileIcon}
+                    source={{
+                        uri: profilePic,
+                    }}
+            />
+            <Text testID="title" style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
+                Ranking: {userRanking}, Points: {userPoints}
+            </Text>
+
+            {target === "Lose Weight" || target === "Gain Weight"?
             <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
-                {profile.map((profile, index) => {
+                {foodRanking.map((foodRanking, index) => {
                     return (
-                        <Card key={index} cardTitle ={gender} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle ={foodRanking} style={{ marginBottom: 19 }}>
                             <View style={{ marginTop: 15 }}>
                                 <Text style={[styles.recommendationTitle]}>
-                                    {gender}
+                                    {target}
                                 </Text>
                             </View>
                         </Card>
@@ -173,22 +309,24 @@ export default function Leaderboard  ({ navigation }) {
                 })}
             </ScrollView> : 
 
+            target === "Maintain Weight"?
             //second leaderboard
             <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
-                {profile.map((profile, index) => {
+                {exerciseRanking.map((exerciseRanking, index) => {
                     return (
-                        <Card key={index} cardTitle ={gender} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle ={exerciseRanking} style={{ marginBottom: 19 }}>
                             <View style={{ marginTop: 15 }}>
-                                <Text style={[styles.recommendationTitle]}>
-                                    {gender}
-                                </Text>
+                               
                             </View>
                         </Card>
                     )
                 })}
-            </ScrollView>}
-
+            </ScrollView>:
             
+            //if havent set up target
+            <ScrollView></ScrollView>
+            }
+
         </View>
     )
 

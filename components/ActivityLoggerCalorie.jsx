@@ -154,6 +154,7 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             const updates = {
                 id: user.id,
                 listValue: counter,
+                userId: user.id,
                 foodType : foodType.charAt(0).toUpperCase() + foodType.toLowerCase().slice(1),
                 date: dietDate.toISOString(),
                 time: dietTimeText,

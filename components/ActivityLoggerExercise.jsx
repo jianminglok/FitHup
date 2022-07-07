@@ -255,6 +255,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
             const updates = {
                 id: user.id,
                 listValue: counter,
+                userId: user.id,
                 exerciseType,
                 date: exerciseDate.toISOString(),
                 startTime: exerciseStartTimeText,
