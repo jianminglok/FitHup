@@ -82,26 +82,23 @@ export default function Leaderboard  ({ navigation }) {
         }
 
 
-        const getProfile = async () => {
+        async function getProfile () {
             try {
                 setLoading(true);
-                const user = supabase.auth.user();
                 if (!user) throw new Error("No user on the session!");
 
-                let { data, error, status } = await supabase
-                    .from("profiles")
+                const { data, error } = await supabase
+                    .from('profiles')
                     .select(`name`)
-                    .eq("id", user.id)
-                    .single();
-                if (error && status !== 406) {
+                    .eq('id', user.id)
+                    
+                if (data) {
+                    setName(data['name'])
+                    
+                } else if (error) {
                     throw error;
                 }
 
-                if (data) {
-                    setName(data['name'])
-        
-                    
-                }
             } catch (error) {
                 console.log(error)
                 Alert.alert((error).message);
@@ -153,7 +150,7 @@ export default function Leaderboard  ({ navigation }) {
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerExercise')
-                    .select(`caloriesAmount, id(name), userId(targetType)`)
+                    .select(`caloriesAmount, id(name, profilePic), userId(targetType)`)
                     .gte('date', today.toISOString())
                     .lt('date', tmr.toISOString())
                     
@@ -164,9 +161,12 @@ export default function Leaderboard  ({ navigation }) {
                         if (data[i]['userId']['targetType'] === 'Maintain Weight') {
                             let key = data[i]['id']['name']
                             if (key in dict) {
-                                dict[key] += parseFloat(data[i]['caloriesAmount'])
+                                dict[key][0] += parseFloat(data[i]['caloriesAmount'])
                             } else {
-                                dict[key] = parseFloat(data[i]['caloriesAmount'])
+                                let arr = [];
+                                arr[0] = parseFloat(data[i]['caloriesAmount'])
+                                arr[1] = arr[3] = data[i]['id']['profilePic']
+                                dict[key] = arr;
                             }
                         }
                     }
@@ -255,13 +255,34 @@ export default function Leaderboard  ({ navigation }) {
         if (mounted.current != false) {
             getProfile();
             getTarget();
-            getExercise();
-            getDietaryIntake();
-            //console.log(target)
+            
+            if (target === 'Maintain Weight') {
+                getExercise();
+                console.log('ex')
+            }
+            if (target === 'Gain Weight' || target === 'Lose Weight') {
+                getDietaryIntake();
+                console.log('food')
+            }
+            
         }
+        //Subscribe to real time changes to list of food performed
+        const exerciseSubscription = supabase
+            .from('ActivityLoggerExercise')
+            .on('*', () => getExercise())
+            .subscribe()
+
+        //Subscribe to real time changes to list of food performed
+        const foodSubscription = supabase
+            .from('ActivityLoggerCalorie')
+            .on('*', () => getDietaryIntake())
+            .subscribe()
 
         return () => {
             mounted.current = false;
+            supabase.removeSubscription(exerciseSubscription);
+            supabase.removeSubscription(foodSubscription);
+
             
         };
     }, [user]);
@@ -326,19 +347,18 @@ export default function Leaderboard  ({ navigation }) {
                                 <Text style={[styles.recommendationTitle]}>
                                     {foodRanking[1]}
                                 </Text>
-                                {/* <Image
-                                    style={Style.topBarProfileIcon}
-                                    source={{
-                                        uri: downloadImage(foodRanking[2])
-                                    }}
-                                /> */}
+                                    {/* <Image
+                                        style={Style.topBarProfileIcon}
+                                        source={{
+                                            uri: downloadImage(foodRanking[2])
+                                        }}
+                                    /> */}
 
                             </View>
                         </Card>
                     )
                 })}
             </ScrollView> :
-
         
             //show leaderboard 2
             target === "Maintain Weight" ?

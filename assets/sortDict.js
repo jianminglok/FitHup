@@ -1,7 +1,7 @@
 const sortDict = (dict, name) => {
-
-    let ranking;
-    let points;
+    
+    let ranking=0;
+    let points=0;
     
     // Create items array
     var items = Object.keys(dict).map(function(key) {
@@ -14,6 +14,7 @@ const sortDict = (dict, name) => {
         return second[1] - first[1];
     });
 
+    
     //get user personal ranking
     for (let i =0; i< items.length; i++) {
         if (items[i][0] === name) {
