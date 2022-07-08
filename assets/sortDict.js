@@ -5,8 +5,9 @@ const sortDict = (dict, name) => {
     
     // Create items array
     var items = Object.keys(dict).map(function(key) {
-        return [key, dict[key]];
+        return [key, dict[key][0], dict[key][1]];
     });
+    
     
     // Sort the array based on the second element
     items.sort(function(first, second) {
@@ -21,7 +22,7 @@ const sortDict = (dict, name) => {
         }
     }
 
-
+    
     return [items, ranking, points];
 
 }

@@ -194,7 +194,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Leaderboard"
-        component={Homepage}
+        component={Leaderboard}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -210,7 +210,7 @@ export default function BottomBar({ session, navigation }) {
       
       <Tab.Screen
         name="Calories"
-        component={Leaderboard}
+        component={FoodLog}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

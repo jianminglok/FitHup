@@ -2,6 +2,7 @@ const pointsForCalorieIntake = (dict) => {
     for (key in dict) {
         let target = dict[key][1];
         let recommendedAmount = dict[key][2];
+        let profilePic = dict[key][3];
         
         let points = 1000;
         let total = dict[key][0];
@@ -14,7 +15,7 @@ const pointsForCalorieIntake = (dict) => {
             points -= pointsChange;
         }
 
-        dict[key] = points;
+        dict[key] = [points, profilePic];
 
         
     }

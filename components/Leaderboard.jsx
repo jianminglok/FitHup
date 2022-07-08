@@ -17,8 +17,6 @@ import {
 } from "react-native";
 import * as Font from 'expo-font';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useDispatch, useSelector } from 'react-redux';
-import { setName, setProfilePic } from "../slices/profileSlice";
 import TopBar from './TopBar';
 import Style from './Style';
 import Button from "./Button";
@@ -41,15 +39,13 @@ export default function Leaderboard  ({ navigation }) {
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
     const [loading, setLoading] = useState(false);
+    const [name, setName] = useState();
     const [target, setTarget] = useState();
     const [exerciseRanking, setExerciseRanking] = useState([]);
     const [foodRanking, setFoodRanking] = useState([]);
     const [userRanking, setUserRanking] = useState();
     const [userPoints, setUserPoints] = useState();
 
-    const dispatch = useDispatch();
-    const { name, profilePic } = useSelector((state) => state.profile);
-    
     const downloadImage = async (path) => {
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path)
@@ -61,7 +57,7 @@ export default function Leaderboard  ({ navigation }) {
             fileReaderInstance.readAsDataURL(data);
             fileReaderInstance.onload = () => {
                 let base64data = fileReaderInstance.result;
-                dispatch(setProfilePic(base64data));
+                return base64data;
             }
         } catch (error) {
             console.log(error)
@@ -85,6 +81,7 @@ export default function Leaderboard  ({ navigation }) {
             }
         }
 
+
         const getProfile = async () => {
             try {
                 setLoading(true);
@@ -93,7 +90,7 @@ export default function Leaderboard  ({ navigation }) {
 
                 let { data, error, status } = await supabase
                     .from("profiles")
-                    .select(`name, profilePic`)
+                    .select(`name`)
                     .eq("id", user.id)
                     .single();
                 if (error && status !== 406) {
@@ -101,8 +98,9 @@ export default function Leaderboard  ({ navigation }) {
                 }
 
                 if (data) {
-                    if (data.name) dispatch(setName(data.name));
-                    if (data.profilePic) downloadImage(data.profilePic);
+                    setName(data['name'])
+        
+                    
                 }
             } catch (error) {
                 console.log(error)
@@ -124,7 +122,12 @@ export default function Leaderboard  ({ navigation }) {
                     
 
                 if (data) {
-                    setTarget(data[0]['targetType'])
+                    if (data.length !==0) {
+                        setTarget(data[0]['targetType'])
+                        
+                    }
+                
+                    
                 } else if (error) {
                     throw error;
                 }
@@ -169,7 +172,7 @@ export default function Leaderboard  ({ navigation }) {
                     }
                     
                     let results = sortDict(dict,name);
-
+            
                     setExerciseRanking(results[0]);
                     setUserRanking(results[1]);
                     setUserPoints(results[2]);
@@ -177,7 +180,6 @@ export default function Leaderboard  ({ navigation }) {
                     // setExerciseRanking(sortDict(dict, name)[0]);
                     // setUserRanking(sortDict(dict, name)[1]);
                     //console.log(sortDict(dict));
-
                 
                 } else if (error) {
                     throw error;
@@ -205,12 +207,11 @@ export default function Leaderboard  ({ navigation }) {
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerCalorie')
-                    .select(`caloriesAmount, id(name), userId(targetType,recommendedCaloriesIntakeAmount)`)
+                    .select(`caloriesAmount, id(name, profilePic), userId(targetType,recommendedCaloriesIntakeAmount)`)
                     .gte('date', today.toISOString())
                     .lt('date', tmr.toISOString())          
     
                 if (data) {
-                    //console.log(data)
                     const dict = {}
                     for (let i=0; i<data.length; i++) {
 
@@ -223,19 +224,19 @@ export default function Leaderboard  ({ navigation }) {
                                 arr[0] = parseFloat(data[i]['caloriesAmount']);
                                 arr[1] = data[i]['userId']['targetType'];
                                 arr[2] = data[i]['userId']['recommendedCaloriesIntakeAmount'];
+                                arr[3] = data[i]['id']['profilePic']
                                 dict[key] = arr;
                             }
                         }
                     }
                     
-                   
                     pointsForCalorieIntake(dict);
 
                     let results = sortDict(dict,name);
                     setFoodRanking(results[0]);
                     setUserRanking(results[1]);
                     setUserPoints(results[2]);
-                    
+            
                 
                 } else if (error) {
                     throw error;
@@ -246,9 +247,9 @@ export default function Leaderboard  ({ navigation }) {
             }
             finally {
                 setLoading(false)
+                // console.log(foodRanking);
             }
         }
-
 
         prepare();
         if (mounted.current != false) {
@@ -256,8 +257,8 @@ export default function Leaderboard  ({ navigation }) {
             getTarget();
             getExercise();
             getDietaryIntake();
+            //console.log(target)
         }
-
 
         return () => {
             mounted.current = false;
@@ -284,47 +285,82 @@ export default function Leaderboard  ({ navigation }) {
                 Leaderboard
             </Text>
 
-            <Image
-                    style={Style.topBarProfileIcon}
-                    source={{
-                        uri: profilePic,
-                    }}
-            />
-            <Text testID="title" style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
-                Ranking: {userRanking}, Points: {userPoints}
-            </Text>
+            
+            {target !== undefined ?
+                userRanking !== undefined?
 
+                //show ranking
+                <View>
+                    <Text style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
+                        Ranking: {userRanking}, Points: {userPoints}
+                    </Text>
+                </View>
+                :
+                
+                //if no ranking but got target
+                target === "Lose Weight" || target === "Gain Weight"?
+                <Text style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
+                    You are currently unranked. To be placed in the leaderboard, please add a Dietary Intake Activitiy.
+                </Text>:
+            
+                //if no ranking but got target
+                <Text style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
+                    You are currently unranked. To be placed in the leaderboard, please add an Exercise Activitiy.
+                </Text> :
+                
+                //if no target
+                <Text style={[styles.header, { alignSelf: 'flex-start',marginTop:20 }]}>
+                    You are currently unranked. To be placed in the leaderboard, please set your target in the Target Page.
+                </Text>
+            }
+
+             
             {target === "Lose Weight" || target === "Gain Weight"?
+            //show leaderboard 1
+
             <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
                 {foodRanking.map((foodRanking, index) => {
                     return (
-                        <Card key={index} cardTitle ={foodRanking} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle ={foodRanking[0]} style={{ marginBottom: 19 }}>
                             <View style={{ marginTop: 15 }}>
                                 <Text style={[styles.recommendationTitle]}>
-                                    {target}
+                                    {foodRanking[1]}
                                 </Text>
+                                {/* <Image
+                                    style={Style.topBarProfileIcon}
+                                    source={{
+                                        uri: downloadImage(foodRanking[2])
+                                    }}
+                                /> */}
+
                             </View>
                         </Card>
                     )
                 })}
-            </ScrollView> : 
+            </ScrollView> :
 
-            target === "Maintain Weight"?
-            //second leaderboard
+        
+            //show leaderboard 2
+            target === "Maintain Weight" ?
             <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
                 {exerciseRanking.map((exerciseRanking, index) => {
                     return (
-                        <Card key={index} cardTitle ={exerciseRanking} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle ={exerciseRanking[0]} style={{ marginBottom: 19 }}>
                             <View style={{ marginTop: 15 }}>
-                               
+                                <Text style={[styles.recommendationTitle]}>
+                                        {exerciseRanking[1]}
+                                </Text>                             
                             </View>
                         </Card>
                     )
                 })}
-            </ScrollView>:
+            </ScrollView>
+            :
             
-            //if havent set up target
+            //dont show anything if target is not set
             <ScrollView></ScrollView>
+            
+            
             }
 
         </View>
@@ -348,5 +384,3 @@ const styles = StyleSheet.create({
         flexShrink: 1
     },
 })
-
-
