@@ -257,7 +257,7 @@ export default ActivityLoggerExercise = ({ navigation }) => {
                 listValue: counter,
                 userId: user.id,
                 exerciseType,
-                date: exerciseDate.toISOString(),
+                date: exerciseDate.toLocaleString('en-GB', { timeZone: 'UTC' }),
                 startTime: exerciseStartTimeText,
                 endTime: exerciseEndTimeText,
                 caloriesAmount: parseInt(caloriesAmount)
