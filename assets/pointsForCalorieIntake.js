@@ -1,4 +1,26 @@
-const pointsForCalorieIntake = (dict) => {
+import { supabase } from '../lib/supabase'
+
+const pointsForCalorieIntake = async (dict) => {
+    let profilePicDownloaded;
+
+    const downloadImage = async (path, index) => {
+        try {
+            const { data, error } = await supabase.storage.from('avatars').download(path)
+            if (error) {
+                throw error
+            }
+
+            const fileReaderInstance = new FileReader();
+            fileReaderInstance.readAsDataURL(data);
+            fileReaderInstance.onload = () => {
+                let base64data = fileReaderInstance.result;
+                profilePicDownloaded = base64data;
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     for (key in dict) {
         let target = dict[key][1];
         let recommendedAmount = dict[key][2];
@@ -15,9 +37,9 @@ const pointsForCalorieIntake = (dict) => {
             points -= pointsChange;
         }
 
-        dict[key] = [points, profilePic];
+        await downloadImage(profilePic)
 
-        
+        dict[key] = [points, profilePicDownloaded];
     }
     
 

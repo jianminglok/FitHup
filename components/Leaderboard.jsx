@@ -46,25 +46,6 @@ export default function Leaderboard  ({ navigation }) {
     const [userRanking, setUserRanking] = useState();
     const [userPoints, setUserPoints] = useState();
 
-    const downloadImage = async (path) => {
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path)
-            if (error) {
-                throw error
-            }
-
-            const fileReaderInstance = new FileReader();
-            fileReaderInstance.readAsDataURL(data);
-            fileReaderInstance.onload = () => {
-                let base64data = fileReaderInstance.result;
-                return base64data;
-            }
-        } catch (error) {
-            console.log(error)
-            Alert.alert('Error retrieving image: ', error.message)
-        }
-    }
-
     useEffect(() => {
         mounted.current = true;
         // Prepare to load custom fonts
@@ -230,7 +211,7 @@ export default function Leaderboard  ({ navigation }) {
                         }
                     }
                     
-                    pointsForCalorieIntake(dict);
+                    await pointsForCalorieIntake(dict);
 
                     let results = sortDict(dict,name);
                     setFoodRanking(results[0]);
@@ -347,12 +328,12 @@ export default function Leaderboard  ({ navigation }) {
                                 <Text style={[styles.recommendationTitle]}>
                                     {foodRanking[1]}
                                 </Text>
-                                    {/* <Image
-                                        style={Style.topBarProfileIcon}
-                                        source={{
-                                            uri: downloadImage(foodRanking[2])
-                                        }}
-                                    /> */}
+                                <Image
+                                    style={Style.topBarProfileIcon}
+                                    source={{
+                                        uri: foodRanking[2]
+                                    }}
+                                />
 
                             </View>
                         </Card>
