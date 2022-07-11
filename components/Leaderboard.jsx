@@ -129,9 +129,11 @@ export default function Leaderboard  ({ navigation }) {
                 if (!user) throw new Error("No user on the session!");
 
                 let today = new Date();
+                today.setTime(today.getTime() + 8 *60*60*1000)
                 today.setUTCHours(0, 0, 0, 0);
                 let tmr = new Date();
-                tmr.setDate(tmr.getDate() + 1);
+                tmr.setTime(tmr.getTime() + 8 *60*60*1000);
+                tmr.setDate(today.getDate() + 1);
                 tmr.setUTCHours(0, 0, 0, 0);
 
                 const { data, error } = await supabase
@@ -186,10 +188,13 @@ export default function Leaderboard  ({ navigation }) {
                 if (!user) throw new Error("No user on the session!");
 
                 let today = new Date();
+                today.setTime(today.getTime() + 8 *60*60*1000)
                 today.setUTCHours(0, 0, 0, 0);
                 let tmr = new Date();
-                tmr.setDate(tmr.getDate() + 1);
+                tmr.setTime(tmr.getTime() + 8 *60*60*1000);
+                tmr.setDate(today.getDate() + 1);
                 tmr.setUTCHours(0, 0, 0, 0);
+
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerCalorie')
@@ -198,7 +203,11 @@ export default function Leaderboard  ({ navigation }) {
                     .lt('date', tmr.toISOString())          
     
                 if (data) {
-                    await data
+                    let promise = new Promise(function(resolve, reject) {
+                        resolve(data);  
+                    })
+                    
+                    //dataM = promise.then(function(value){console.log(value)})
                     
                     const dict = {}
                     for (let i=0; i<data.length; i++) {
@@ -218,7 +227,7 @@ export default function Leaderboard  ({ navigation }) {
                         }
                     }
                     
-                    console.log(dict)
+                    // console.log(dict)
                     await pointsForCalorieIntake(dict);
                     
 

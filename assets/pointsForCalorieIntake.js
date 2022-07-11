@@ -49,6 +49,10 @@ const pointsForCalorieIntake = async (dict) => {
             points -= pointsChange;
         }
 
+        if (points < 0){
+            points = 0
+        }
+
         await downloadImage(profilePic)
 
         dict[key] = [points, profilePicDownloaded];
