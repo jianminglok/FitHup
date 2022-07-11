@@ -5,14 +5,10 @@ import colours from "../assets/colours/colours";
 import {
     Alert,
     Image,
-    Platform,
-    Pressable,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
-    TextInput,
-    TouchableOpacity,
     View,
 } from "react-native";
 import * as Font from 'expo-font';
@@ -72,16 +68,17 @@ export default function Leaderboard  ({ navigation }) {
                     .from('profiles')
                     .select(`name`)
                     .eq('id', user.id)
+                    .single()
                     
                 if (data) {
                     setName(data['name'])
+                    
                     
                 } else if (error) {
                     throw error;
                 }
 
             } catch (error) {
-                console.log(error)
                 Alert.alert((error).message);
             } finally {
                 setLoading(false);
@@ -103,8 +100,16 @@ export default function Leaderboard  ({ navigation }) {
                     if (data.length !==0) {
                         setTarget(data[0]['targetType'])
                         
+                        if (target === 'Maintain Weight') {
+                            getExercise();
+                            
+                        }
+                        if (target === 'Gain Weight' || target === 'Lose Weight') {
+                            getDietaryIntake();
+                            
+                        }
                     }
-                
+            
                     
                 } else if (error) {
                     throw error;
@@ -193,6 +198,8 @@ export default function Leaderboard  ({ navigation }) {
                     .lt('date', tmr.toISOString())          
     
                 if (data) {
+                    await data
+                    
                     const dict = {}
                     for (let i=0; i<data.length; i++) {
 
@@ -211,9 +218,12 @@ export default function Leaderboard  ({ navigation }) {
                         }
                     }
                     
+                    console.log(dict)
                     await pointsForCalorieIntake(dict);
+                    
 
                     let results = sortDict(dict,name);
+                    //console.log(results)
                     setFoodRanking(results[0]);
                     setUserRanking(results[1]);
                     setUserPoints(results[2]);
@@ -235,16 +245,9 @@ export default function Leaderboard  ({ navigation }) {
         prepare();
         if (mounted.current != false) {
             getProfile();
+            
             getTarget();
             
-            if (target === 'Maintain Weight') {
-                getExercise();
-                console.log('ex')
-            }
-            if (target === 'Gain Weight' || target === 'Lose Weight') {
-                getDietaryIntake();
-                console.log('food')
-            }
             
         }
         //Subscribe to real time changes to list of food performed
