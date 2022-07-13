@@ -144,6 +144,27 @@ function SetupTargetDrawer() {
   );
 }
 
+function LeaderboardDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props}
+      />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background
+        },
+      }}>
+      <Drawer.Screen
+        name="LeaderboardDrawer"
+        component={Leaderboard}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 }
+        }} />
+    </Drawer.Navigator >
+  );
+}
+
 export default function BottomBar({ session, navigation }) {
 
   const [appIsReady, setAppIsReady] = useState(false);
@@ -194,7 +215,7 @@ export default function BottomBar({ session, navigation }) {
 
       <Tab.Screen
         name="Leaderboard"
-        component={Leaderboard}
+        component={LeaderboardDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -210,7 +231,7 @@ export default function BottomBar({ session, navigation }) {
       
       <Tab.Screen
         name="Calories"
-        component={FoodLog}
+        component={FoodLogDrawer}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
