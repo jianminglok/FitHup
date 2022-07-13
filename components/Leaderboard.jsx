@@ -95,7 +95,6 @@ export default function Leaderboard  ({ navigation }) {
                     .select('targetType')
                     .eq('id', user.id)
                     
-
                 if (data) {
                     if (data.length !==0) {
                         setTarget(data[0]['targetType'])
@@ -132,9 +131,8 @@ export default function Leaderboard  ({ navigation }) {
                 today.setTime(today.getTime() + 8 *60*60*1000)
                 today.setUTCHours(0, 0, 0, 0);
                 let tmr = new Date();
-                tmr.setTime(tmr.getTime() + 8 *60*60*1000);
+                tmr.setTime(today.getTime());
                 tmr.setDate(today.getDate() + 1);
-                tmr.setUTCHours(0, 0, 0, 0);
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerExercise')
@@ -191,22 +189,21 @@ export default function Leaderboard  ({ navigation }) {
                 today.setTime(today.getTime() + 8 *60*60*1000)
                 today.setUTCHours(0, 0, 0, 0);
                 let tmr = new Date();
-                tmr.setTime(tmr.getTime() + 8 *60*60*1000);
+                tmr.setTime(today.getTime());
                 tmr.setDate(today.getDate() + 1);
-                tmr.setUTCHours(0, 0, 0, 0);
-
+                
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerCalorie')
                     .select(`caloriesAmount, id(name, profilePic), userId(targetType,recommendedCaloriesIntakeAmount)`)
                     .gte('date', today.toISOString())
                     .lt('date', tmr.toISOString())          
-    
+
                 if (data) {
-                    let promise = new Promise(function(resolve, reject) {
-                        resolve(data);  
-                    })
-                    
+                    // let promise = new Promise(function(resolve, reject) {
+                    //     resolve(data);  
+                    // })
+                
                     //dataM = promise.then(function(value){console.log(value)})
                     
                     const dict = {}
@@ -227,7 +224,7 @@ export default function Leaderboard  ({ navigation }) {
                         }
                     }
                     
-                    // console.log(dict)
+                    //console.log(dict)
                     await pointsForCalorieIntake(dict);
                     
 
@@ -254,7 +251,6 @@ export default function Leaderboard  ({ navigation }) {
         prepare();
         if (mounted.current != false) {
             getProfile();
-            
             getTarget();
             
             
@@ -276,7 +272,7 @@ export default function Leaderboard  ({ navigation }) {
             supabase.removeSubscription(exerciseSubscription);
             supabase.removeSubscription(foodSubscription);
 
-            
+        
         };
     }, [user]);
 
@@ -373,7 +369,7 @@ export default function Leaderboard  ({ navigation }) {
             //dont show anything if target is not set
             <ScrollView></ScrollView>
             
-            
+         
             }
 
         </View>
