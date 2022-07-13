@@ -106,7 +106,7 @@ export default SetupTarget = ({ navigation }) => {
         setRecommendedCaloriesIntake(Math.round(TDEE));
     };
 
-    const [targetType, setTargetType] = useState(weightTargets[0]);
+    const [targetType, setTargetType] = useState();
     const [targetWeight, setTargetWeight] = useState('');
     const [caloriesIntakeAmount, setCaloriesIntakeAmount] = useState('');
     const [caloriesBurntAmount, setCaloriesBurntAmount] = useState('');
