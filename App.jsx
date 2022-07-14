@@ -20,6 +20,9 @@ import Launchpage from "./components/Launchpage";
 import Login from "./components/Login";
 import SetupProfile from "./components/SetupProfile";
 import Signup from "./components/Signup";
+import FoodLog from "./components/FoodLog";
+import ExerciseLog from "./components/ExerciseLog";
+import Recommendations from "./components/Recommendations";
 import Style from "./components/Style";
 import { supabase } from "./lib/supabase";
 import "react-native-url-polyfill/auto";
@@ -137,6 +140,30 @@ export default function App({ navigation }) {
             <Stack.Screen
               name="TabStack"
               component={BottomBar}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="FoodLog"
+              component={FoodLog}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="ExerciseLog"
+              component={ExerciseLog}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="Recommendations"
+              component={Recommendations}
               options={{
                 headerShown: false,
               }}

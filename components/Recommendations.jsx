@@ -14,12 +14,12 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function FoodLog({ navigation }) {
+export default function Recommendations({ navigation }) {
     const user = supabase.auth.user();
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
     const [loading, setLoading] = useState(false);
-    const [food, setFood] = useState([]);
+    const arr = [1,2,3];
 
 
     useEffect(() => {
@@ -38,46 +38,14 @@ export default function FoodLog({ navigation }) {
             }
         }
 
-        async function getUserDietaryIntake() {
-            try {
-                setLoading(true);
-                if (!user) throw new Error("No user on the session!");
-
-                const { data, error } = await supabase
-                    .from('ActivityLoggerCalorie')
-                    .select()
-                    .eq("id", user.id)
-                    .order('date', { ascending: false })
-                    .order('time', { ascending: false })
-
-                if (data) {
-                    setFood(data)
-                } else if (error) {
-                    throw error;
-                }
-            }
-            catch (error) {
-                console.log(error)
-            }
-            finally {
-                setLoading(false)
-            }
-        }
-
         prepare();
         if (mounted.current != false) {
-            getUserDietaryIntake();
+            
         }
-
-        //Subscribe to real time changes to list of food performed
-        const foodSubscription = supabase
-            .from('ActivityLoggerCalorie')
-            .on('*', () => getUserDietaryIntake())
-            .subscribe()
 
         return () => {
             mounted.current = false;
-            supabase.removeSubscription(foodSubscription);
+        
         };
     }, [user]);
 
@@ -95,18 +63,18 @@ export default function FoodLog({ navigation }) {
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar testID="logTopBar" navigation={navigation} />
+            <TopBar testID="recommendationBar" navigation={navigation} />
             <Text testID='title' style={[styles.header, { alignSelf: 'flex-start' }]}>
-                Dietary Intake
+                Recommendations
             </Text>
 
-            <ScrollView testID='logContainer' style={[Style.homepageScrollview, { marginTop: 19 }]}>
-                {food.map((food, index) => {
+            <ScrollView testID='recommendationContainer' style={[Style.homepageScrollview, { marginTop: 19 }]}>
+                {arr.map((index) => {
                     return (
-                        <Card key={index} cardTitle={food.date + '\t\t' + food.time.slice(0,5)} titleSize={18} style={{ marginBottom: 19 }}>
+                        <Card key={index} cardTitle={"Recommendation " + index} titleSize={20} style={{ marginBottom: 19}}>
                             <View style={{ marginTop: 15 }}>
-                                <Text style={[styles.recommendationTitle]}>
-                                    {food.foodType + ' (' + food.portionValue + ' ' + food.unit + ')' + ' - ' + food.caloriesAmount + ' cal'}
+                                <Text style={[styles.recommendationTitle, {marginBottom: 150}]}>
+                                    {"Details of recommendations"} 
                                 </Text>
                             </View>
                         </Card>

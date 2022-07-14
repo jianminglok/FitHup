@@ -39,7 +39,7 @@ export default AddActivityButton = ({ navigation }) => {
         }}
         color={colours.button}
         tintColor={colours.button}
-        distanceToEdge={{ vertical: 0, horizontal: 0 }}
+        distanceToEdge={{ vertical: 20, horizontal: 0 }}
         buttonSize={60}
         iconHeight={25}
         iconWidth={25}
