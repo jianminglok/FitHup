@@ -43,14 +43,13 @@ export default function Homepage({ navigation }) {
     const [exerciseTarget, setExerciseTarget] = useState();
     const [calorieTarget, setCalorieTarget] = useState();
     const [dailyExercise,setDailyExercise] = useState();
+    const [weeklyExercise,setWeeklyExercise] = useState();
     const [dailyFood, setDailyFood] = useState();
+    const [weeklyFood, setWeeklyFood] = useState();
     const [exerciseProgressBar, setExerciseProgressBar] = useState();
     const [foodProgressBar, setFoodProgressBar] = useState();
+    const [barChange, setBarChange] = useState(false);
     
-    function getNum() {
-        return exerciseProgressBar;
-    }
-
     useEffect(() => {
         mounted.current = true;
         // Prepare to load custom fonts
@@ -121,7 +120,7 @@ export default function Homepage({ navigation }) {
             }
         }
 
-        async function getExercise() {
+        async function getDailyExercise() {
             try {
 
                 setLoading(true);
@@ -163,34 +162,54 @@ export default function Homepage({ navigation }) {
             }
         }
         
-        async function getDietaryIntake() {
+        async function getWeeklyExercise() {
             try {
                 setLoading(true);
                 if (!user) throw new Error("No user on the session!");
 
                 let today = new Date();
-                today.setTime(today.getTime() + 8 * 60 * 60 * 1000)
+                today.setTime(today.getTime() + 8 * 60 * 60* 1000)
                 today.setUTCHours(0, 0, 0, 0);
-                let tmr = new Date();
-                tmr.setTime(today.getTime());
-                tmr.setDate(today.getDate() + 1);
+                today.setDate(today.getDate() +1)
+                let weekBefore = new Date();
+                weekBefore.setTime(today.getTime());
+                weekBefore.setDate(today.getDate() - 7);
 
                 const { data, error } = await supabase
-                    .from('ActivityLoggerCalorie')
-                    .select(`caloriesAmount`)
-                    .gte('date', today.toISOString())
-                    .lt('date', tmr.toISOString())
+                    .from('ActivityLoggerExercise')
+                    .select(`caloriesAmount, date`)
+                    .gte('date', weekBefore.toISOString())
+                    .lt('date', today.toISOString())
                     .eq('id', user.id)
                     
-
                 if (data) {
 
-                    let total = 0;
-                    for (let i = 0; i < data.length; i++) {
-                        total += parseInt(data[i]['caloriesAmount'])
-                    }
-                    setDailyFood(total);
+                    // let dict = {
+                    //     [new Date()] : 0, 
+                    //     [weekBefore.getDate() + 1] : 0,
+                    //     [weekBefore.getDate() + 2] : 0,
+                    //     [weekBefore.getDate() + 3] : 0,
+                    //     [weekBefore.getDate() + 4] : 0,
+                    //     [weekBefore.getDate() + 5] : 0,
+                    //     [weekBefore.getDate() + 6] : 0,
+                    
+                    
+                    // }
+                    // console.log(dict)
 
+                    
+                    // for (let i = 0; i < data.length; i++) {
+                    //     let key = data[i]['date'];
+                    //     if (key in dict) {
+                    //         dict[key] += parseFloat(data[i]['caloriesAmount']);
+                    //     } else {
+                    //         dict[key] = parseFloat(data[i]['caloriesAmount']);
+
+                    //     }
+                    // }
+                    // console.log(dict)
+                    
+                
                     
                 } else if (error) {
                     throw error;
@@ -204,12 +223,92 @@ export default function Homepage({ navigation }) {
             }
         }
         
+        async function getDailyDietaryIntake() {
+            try {
+                setLoading(true);
+                if (!user) throw new Error("No user on the session!");
+                
+                let today = new Date();
+                today.setTime(today.getTime() + 8 * 60 * 60 * 1000)
+                today.setUTCHours(0, 0, 0, 0);
+                let tmr = new Date();
+                tmr.setTime(today.getTime());
+                tmr.setDate(today.getDate() + 1);
+                
+                const { data, error } = await supabase
+                .from('ActivityLoggerCalorie')
+                .select(`caloriesAmount`)
+                .gte('date', today.toISOString())
+                .lt('date', tmr.toISOString())
+                .eq('id', user.id)
+                
+                
+                if (data) {
+                    
+                    let total = 0;
+                    for (let i = 0; i < data.length; i++) {
+                        total += parseInt(data[i]['caloriesAmount'])
+                    }
+                    setDailyFood(total);
+                    
+                    
+                } else if (error) {
+                    throw error;
+                }
+            }
+            catch (error) {
+                console.log(error)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+        
+        async function getWeeklyDietaryIntake() {
+            try {
+                setLoading(true);
+                if (!user) throw new Error("No user on the session!");
+
+                let today = new Date();
+                today.setTime(today.getTime() + 8 * 60 * 60* 1000)
+                today.setUTCHours(0, 0, 0, 0);
+                today.setDate(today.getDate() +1)
+                let weekBefore = new Date();
+                weekBefore.setTime(today.getTime());
+                weekBefore.setDate(today.getDate() - 7);
+
+                const { data, error } = await supabase
+                    .from('ActivityLoggerCalorie')
+                    .select(`caloriesAmount`)
+                    .gte('date', weekBefore.toISOString())
+                    .lt('date', today.toISOString())
+                    .eq('id', user.id)
+                    
+                if (data) {
+                    let total = 0;
+                    for (let i = 0; i < data.length; i++) {
+                        total += parseInt(data[i]['caloriesAmount'])
+                    }
+                    setWeeklyFood(total);
+                                    
+                } else if (error) {
+                    throw error;
+                }
+            }
+            catch (error) {
+                console.log(error)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+
         async function getExerciseProgressBarRatio() {
             try {
                 setLoading(true);
                 // if (!user) throw new Error("No user on the session!");
                 await getExerciseTarget();
-                await getExercise();
+                await getDailyDietaryIntake();
                 
                 
                 if (dailyExercise > exerciseTarget) {
@@ -221,22 +320,63 @@ export default function Homepage({ navigation }) {
                 
 
                 // console.log(dailyExercise)
+                // console.log(exerciseProgressBar)
 
             } catch (error) {
                 console.log(error)
             }
             finally {
                 setLoading(false)
+                if (barChange) {
+                    setBarChange(false);
+                } else {
+                    setBarChange(true);
+                }
             }
         }
+        
+        async function getFoodProgressBarRatio() {
+            try {
+                setLoading(true);
+                // if (!user) throw new Error("No user on the session!");
+                await getCalorieTarget();
+                await getDailyExercise();
+                
+                
+                if (dailyFood > calorieTarget) {
+                    setFoodProgressBar(1);
+                }
     
+                setFoodProgressBar(dailyFood / calorieTarget);
+                // console.log(exerciseTarget);
+                
+
+                // console.log(dailyExercise)
+                // console.log(exerciseProgressBar)
+
+            } catch (error) {
+                console.log(error)
+            }
+            finally {
+                setLoading(false);
+                if (barChange) {
+                    setBarChange(false);
+                } else {
+                    setBarChange(true);
+                }
+            }
+        }
+
     
         prepare();
 
         if (mounted.current != false) {
-            getExerciseTarget();
-            getExercise();
+            
             getExerciseProgressBarRatio();
+            getFoodProgressBarRatio();
+            getWeeklyExercise();
+            getWeeklyDietaryIntake();
+            
             // const arr = [
             //     new Promise((resolve, reject) => {
             //         resolve(getExerciseTarget());
@@ -264,13 +404,13 @@ export default function Homepage({ navigation }) {
         //Subscribe to real time changes to list of food performed
         const exerciseSubscription = supabase
             .from('ActivityLoggerExercise')
-            .on('*', () => getExercise())
+            .on('*', () => getDailyExercise())
             .subscribe()
 
         //Subscribe to real time changes to list of food performed
         const foodSubscription = supabase
             .from('ActivityLoggerCalorie')
-            .on('*', () => getDietaryIntake())
+            .on('*', () => getDailyDietaryIntake())
             .subscribe()
 
         return () => { 
@@ -279,6 +419,7 @@ export default function Homepage({ navigation }) {
             supabase.removeSubscription(foodSubscription);
         
         };
+    //}, [user, barChange]); //laggy fix to the progress bar loading 
     }, [user]);
 
     // Display splash screen while font is loading
@@ -312,17 +453,17 @@ export default function Homepage({ navigation }) {
                             <Text style={[Style.cardDescription]}>to target</Text>
                         </View>
                         <View style={{ flexDirection: 'column', marginBottom: 15 }}>
-                            {exerciseProgressBar === undefined?
-                            <Progress.Bar progress={0.5} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
+                            {isNaN(exerciseProgressBar) ?   
+                            <Progress.Bar progress={0} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                             : 
-                
-                            <ProgressBarAnimated width={fullWidth - 76} height={10} borderWidth={0} borderRadius={5} backgroundColorOnComplete="#6CC644" value = {exerciseProgressBar * 500}/>
-                            // <Progress.Bar progress={exerciseProgressBar} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
+                                
+                            // <ProgressBarAnimated width={fullWidth - 76} height={10} borderWidth={0} borderRadius={5} backgroundColorOnComplete="#6CC644" value = {exerciseProgressBar * 500}/>
+                            <Progress.Bar progress={exerciseProgressBar} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                             }
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={styles.cardPartitionContainer}>
-                                <Text style={[styles.exerciseCalCount]}>16000</Text>
+                                <Text style={[styles.exerciseCalCount]}>{weeklyExercise}</Text>
                                 <Text style={[styles.exerciseCalText]}>cal</Text>
                             </View>
                             <View style={styles.cardPartitionContainer}>
@@ -352,7 +493,7 @@ export default function Homepage({ navigation }) {
                         </View>
                     </Card>
                 </TouchableOpacity>
-                
+        
                 <TouchableOpacity onPress={()=> navigation.navigate('FoodLog')}>
                     <Card testId="calCard" cardTitle="Calories" style={{ marginVertical: 19 }} titleSize={24}>
                         <Image
@@ -365,11 +506,15 @@ export default function Homepage({ navigation }) {
                             <Text style={[Style.cardDescription]}>to target</Text>
                         </View>
                         <View style={{ flexDirection: 'column', marginBottom: 15 }}>
-                            <Progress.Bar progress={0.8} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%, )" />
+                        {isNaN(foodProgressBar) ? 
+                            <Progress.Bar progress={0} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%, )" />
+                            :
+                            <Progress.Bar progress={foodProgressBar} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%, )" />
+                        }
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={styles.cardPartitionContainer}>
-                                <Text style={[styles.dietCalCount]}>20000</Text>
+                                <Text style={[styles.dietCalCount]}>{weeklyFood}</Text>
                                 <Text style={[styles.dietCalText]}>cal</Text>
                             </View>
                             <View style={styles.cardPartitionContainer}>
