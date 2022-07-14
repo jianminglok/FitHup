@@ -154,8 +154,9 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
             const updates = {
                 id: user.id,
                 listValue: counter,
+                userId: user.id,
                 foodType : foodType.charAt(0).toUpperCase() + foodType.toLowerCase().slice(1),
-                date: dietDate.toISOString(),
+                date: dietDate.toLocaleString('en-GB', { timeZone: 'UTC' }),
                 time: dietTimeText,
                 caloriesAmount: json[0]['calories'],
                 portionValue,
@@ -164,6 +165,8 @@ export default ActivityLoggerCalorie = ({ navigation }) => {
 
             //console.log(data)
             //console.log(error)
+            
+            
 
             const { data, error } = await supabase
                 .from('ActivityLoggerCalorie')
