@@ -6,6 +6,7 @@ import {
     Alert,
     Image,
     ScrollView,
+    Share,
     StatusBar,
     StyleSheet,
     Text,
@@ -22,6 +23,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import Card from './Card';
 import sortDict from '../assets/sortDict';
 import pointsForCalorieIntake from '../assets/pointsForCalorieIntake';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 let customFonts = {
@@ -189,7 +191,7 @@ export default function Leaderboard({ navigation }) {
                 let tmr = new Date();
                 tmr.setTime(today.getTime());
                 tmr.setDate(today.getDate() + 1);
-                
+
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerCalorie')
@@ -272,6 +274,28 @@ export default function Leaderboard({ navigation }) {
         };
     }, [user]);
 
+    const shareRanking = async () => {
+        try {
+            var m = new Date();
+            var dateString = m.getFullYear() + "/" + (m.getMonth() + 1) + "/" + m.getDate() + " " + m.getHours() + ":" + m.getMinutes() + ":" + m.getSeconds();
+
+            const result = await Share.share({
+                message: 'My current ranking on the FitHup leaderboard is ' + userRanking + ' and I currently have ' + userPoints + ' points as of ' + dateString + '! Join me on FitHup today!',
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            Alert.alert(error.message);
+        }
+    };
+
     // Display splash screen while font is loading
     const onLayoutRootView = useCallback(async () => {
         if (appIsReady) {
@@ -284,93 +308,271 @@ export default function Leaderboard({ navigation }) {
     }
 
     return (
-        <View style={Style.profileContainer} onLayout={onLayoutRootView}>
+        <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar navigation={navigation} />
-            <Text testID="title" style={[styles.header, { alignSelf: 'flex-start' }]}>
+            <TopBar testID="leaderboardTopbar" navigation={navigation} />
+            <Text testID='title' style={[styles.header, { alignSelf: 'flex-start' }]}>
                 Leaderboard
             </Text>
+            {/*
+            <View style={[styles.time, { zIndex: 2 }]}>
+                <View style={[styles.timeBtnContainer, { paddingRight: 5 }]}>
+                    <TouchableOpacity style={[styles.timeBtn, styles.timeBtnActive]}>
+                        <Text style={styles.timeTxt}>Today</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={[styles.timeBtnContainer, { paddingLeft: 5 }]}>
+                    <TouchableOpacity style={styles.timeBtn}>
+                        <Text style={styles.timeTxt}>Week</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            */}
 
             {target !== undefined ?
                 userRanking !== undefined ?
 
                     //show ranking
-                    <View>
-                        <Text style={[styles.header, { alignSelf: 'flex-start', marginTop: 20 }]}>
-                            Ranking: {userRanking}, Points: {userPoints}
-                        </Text>
+                    <View style={{
+                        flexDirection: 'row',
+                        margin: 19
+                    }}>
+                        <View style={[Style.card, { alignSelf: 'flex-start', marginRight: 19, flex: 6 }]}>
+                            <View style={[Style.cardBody, styles.allRankContainer]}>
+                                <View style={styles.rankPart3}>
+                                    <Text style={[Style.cardTitle, styles.allRankTxt]}>Ranking: {userRanking}</Text>
+                                </View>
+                                <View style={styles.rankPart4}>
+                                    <Text style={[Style.cardTitle, styles.allRankTxt, { textAlign: 'right' }]}>{userPoints} points</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View>
+                            <View style={[styles.rankPart4, { display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }]}>
+                                <TouchableOpacity onPress={shareRanking}>
+                                    <Entypo
+                                        name="share"
+                                        size={24}
+                                        color={colours.text}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
+
                     :
 
                     //if no ranking but got target
                     target === "Lose Weight" || target === "Gain Weight" ?
-                        <Text style={[styles.header, { alignSelf: 'flex-start', marginTop: 20 }]}>
+                        <Text style={[styles.unrankedInfo, { alignSelf: 'flex-start', marginTop: 13 }]}>
                             You are currently unranked. To be placed in the leaderboard, please add a Dietary Intake Activitiy.
                         </Text> :
 
                         //if no ranking but got target
-                        <Text style={[styles.header, { alignSelf: 'flex-start', marginTop: 20 }]}>
+                        <Text style={[styles.unrankedInfo, { alignSelf: 'flex-start', marginTop: 13 }]}>
                             You are currently unranked. To be placed in the leaderboard, please add an Exercise Activitiy.
                         </Text> :
 
                 //if no target
-                <Text style={[styles.header, { alignSelf: 'flex-start', marginTop: 20 }]}>
+                <Text style={[styles.unrankedInfo, { alignSelf: 'flex-start', marginTop: 13 }]}>
                     You are currently unranked. To be placed in the leaderboard, please set your target in the Target Page.
                 </Text>
             }
 
-
-            {target === "Lose Weight" || target === "Gain Weight" ?
-                //show leaderboard 1
-
-                <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
-                    {foodRanking.map((foodRanking, index) => {
-                        return (
-                            <Card key={index} cardTitle={foodRanking[3]} style={{ marginBottom: 19 }}>
-                                <View style={{ marginTop: 15 }}>
-                                    <Text style={[styles.recommendationTitle]}>
-                                        {foodRanking[1]}
-                                    </Text>
+            {(target === "Lose Weight" || target === "Gain Weight") && userRanking != undefined ?
+                <ScrollView testID='leaderboardContainer'>
+                    <View style={styles.top3Container}>
+                        {foodRanking.length >= 2
+                            ? <View style={{ marginRight: 20 }}>
+                                <View style={styles.rankContainer}>
                                     <Image
-                                        style={Style.topBarProfileIcon}
+                                        style={styles.top2PicContainer}
                                         source={{
-                                            uri: foodRanking[2]
+                                            uri: foodRanking[1][2],
                                         }}
                                     />
-
+                                    <View style={styles.rankCircle}>
+                                        <Text style={styles.rankText}>2</Text>
+                                    </View>
+                                    <Text style={styles.usernameTxt}>{foodRanking[1][3]}</Text>
+                                    <Text style={styles.userLvlTxt}>{foodRanking[1][1]} points</Text>
                                 </View>
-                            </Card>
+                            </View>
+                            : <View></View>
+                        }
+
+                        {foodRanking.length >= 1
+                            ? <View>
+                                <View style={[styles.rankContainer, { marginBottom: 19 }]}>
+                                    <Image
+                                        style={[styles.crown, { marginBottom: -25, zIndex: 1 }]}
+                                        source={{
+                                            uri: "https://firebasestorage.googleapis.com/v0/b/unify-bc2ad.appspot.com/o/nxyz3hdy7p-166%3A1373?alt=media&token=1ad04e8c-a691-4f77-bdb2-288b90c5e65f",
+                                        }}
+                                    />
+                                    <Image
+                                        style={[styles.top1Container]}
+                                        source={{
+                                            uri: foodRanking[0][2],
+                                        }}
+                                    />
+                                    <View style={[styles.rankCircle, { backgroundColor: 'rgba(255,202,40,1)' }]}>
+                                        <Text style={styles.rankText}>1</Text>
+                                    </View>
+                                    <Text style={styles.usernameTxt}>{foodRanking[0][3]}</Text>
+                                    <Text style={styles.userLvlTxt}>{foodRanking[0][1]} points</Text>
+                                </View>
+                            </View>
+                            : <View></View>
+                        }
+
+
+                        {foodRanking.length >= 3
+                            ? <View style={{ marginLeft: 20 }}>
+                                <View style={styles.rankContainer}>
+                                    <Image
+                                        style={styles.top3PicContainer}
+                                        source={{
+                                            uri: foodRanking[2][2],
+                                        }}
+                                    />
+                                    <View style={[styles.rankCircle, { backgroundColor: 'rgba(255,130,40,1)' }]}>
+                                        <Text style={styles.rankText}>3</Text>
+                                    </View>
+                                    <Text style={styles.usernameTxt}>{foodRanking[2][3]}</Text>
+                                    <Text style={styles.userLvlTxt}>{foodRanking[2][1]} points</Text>
+                                </View>
+                            </View>
+                            : <View></View>
+                        }
+                    </View>
+
+                    {foodRanking.map((foodRanking, index) => {
+                        return (
+                            <View key={index} style={[Style.card, { marginBottom: 13 }]}>
+                                <View style={[Style.cardBody, styles.allRankContainer]}>
+                                    <View style={styles.rankPart1}>
+                                        <Text style={[Style.cardTitle, styles.allRankTxt]}>{index + 1}</Text>
+                                    </View>
+                                    <View style={styles.rankPart2}>
+                                        <Image
+                                            style={styles.rankPic}
+                                            source={{
+                                                uri: foodRanking[2],
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={styles.rankPart3}>
+                                        <Text style={[Style.cardTitle, styles.allRankTxt]}>{foodRanking[3]}</Text>
+                                    </View>
+                                    <View style={styles.rankPart4}>
+                                        <Text style={[Style.cardTitle, styles.allRankTxt, { textAlign: 'right' }]}>{foodRanking[1]} points</Text>
+                                    </View>
+                                </View>
+                            </View>
                         )
                     })}
                 </ScrollView> :
 
-                //show leaderboard 2
-                target === "Maintain Weight" ?
-                    <ScrollView style={[Style.homepageScrollview, { marginTop: 19 }]}>
+                target === "Maintain Weight" && userRanking != undefined ?
+                    <ScrollView testID='leaderboardContainer'>
+                        <View style={styles.top3Container}>
+                            {exerciseRanking.length >= 2
+                                ? <View style={{ marginRight: 20 }}>
+                                    <View style={styles.rankContainer}>
+                                        <Image
+                                            style={styles.top2PicContainer}
+                                            source={{
+                                                uri: exerciseRanking[1][2],
+                                            }}
+                                        />
+                                        <View style={styles.rankCircle}>
+                                            <Text style={styles.rankText}>2</Text>
+                                        </View>
+                                        <Text style={styles.usernameTxt}>{exerciseRanking[1][3]}</Text>
+                                        <Text style={styles.userLvlTxt}>{exerciseRanking[1][1]} points</Text>
+                                    </View>
+                                </View>
+                                : <View></View>
+                            }
+
+                            {exerciseRanking.length >= 1
+                                ? <View>
+                                    <View style={[styles.rankContainer, { marginBottom: 19 }]}>
+                                        <Image
+                                            style={[styles.crown, { marginBottom: -25, zIndex: 1 }]}
+                                            source={{
+                                                uri: "https://firebasestorage.googleapis.com/v0/b/unify-bc2ad.appspot.com/o/nxyz3hdy7p-166%3A1373?alt=media&token=1ad04e8c-a691-4f77-bdb2-288b90c5e65f",
+                                            }}
+                                        />
+                                        <Image
+                                            style={[styles.top1Container]}
+                                            source={{
+                                                uri: exerciseRanking[0][2],
+                                            }}
+                                        />
+                                        <View style={[styles.rankCircle, { backgroundColor: 'rgba(255,202,40,1)' }]}>
+                                            <Text style={styles.rankText}>1</Text>
+                                        </View>
+                                        <Text style={styles.usernameTxt}>{exerciseRanking[0][3]}</Text>
+                                        <Text style={styles.userLvlTxt}>{exerciseRanking[0][1]} points</Text>
+                                    </View>
+                                </View>
+                                : <View></View>
+                            }
+
+
+                            {exerciseRanking.length >= 3
+                                ? <View style={{ marginLeft: 20 }}>
+                                    <View style={styles.rankContainer}>
+                                        <Image
+                                            style={styles.top3PicContainer}
+                                            source={{
+                                                uri: exerciseRanking[2][2],
+                                            }}
+                                        />
+                                        <View style={[styles.rankCircle, { backgroundColor: 'rgba(255,130,40,1)' }]}>
+                                            <Text style={styles.rankText}>3</Text>
+                                        </View>
+                                        <Text style={styles.usernameTxt}>{exerciseRanking[2][3]}</Text>
+                                        <Text style={styles.userLvlTxt}>{exerciseRanking[2][1]} points</Text>
+                                    </View>
+                                </View>
+                                : <View></View>
+                            }
+                        </View>
+
                         {exerciseRanking.map((exerciseRanking, index) => {
                             return (
-                                <Card key={index} cardTitle={exerciseRanking[3]} style={{ marginBottom: 19 }}>
-                                    <View style={{ marginTop: 15 }}>
-                                        <Text style={[styles.recommendationTitle]}>
-                                            {exerciseRanking[1]}
-                                        </Text>
+                                <View key={index} style={[Style.card, { marginBottom: 13 }]}>
+                                    <View style={[Style.cardBody, styles.allRankContainer]}>
+                                        <View style={styles.rankPart1}>
+                                            <Text style={[Style.cardTitle, styles.allRankTxt]}>{index + 1}</Text>
+                                        </View>
+                                        <View style={styles.rankPart2}>
+                                            <Image
+                                                style={styles.rankPic}
+                                                source={{
+                                                    uri: exerciseRanking[2],
+                                                }}
+                                            />
+                                        </View>
+                                        <View style={styles.rankPart3}>
+                                            <Text style={[Style.cardTitle, styles.allRankTxt]}>{exerciseRanking[3]}</Text>
+                                        </View>
+                                        <View style={styles.rankPart4}>
+                                            <Text style={[Style.cardTitle, styles.allRankTxt, { textAlign: 'right' }]}>{exerciseRanking[1]} points</Text>
+                                        </View>
                                     </View>
-                                    <Image
-                                        style={Style.topBarProfileIcon}
-                                        source={{
-                                            uri: exerciseRanking[2]
-                                        }}
-                                    />
-                                </Card>
+                                </View>
                             )
                         })}
                     </ScrollView>
+
                     :
 
                     //dont show anything if target is not set
                     <ScrollView></ScrollView>
-
-
             }
 
         </View>
@@ -386,11 +588,157 @@ const styles = StyleSheet.create({
         marginLeft: 27
     },
 
+    unrankedInfo: {
+        color: colours.text,
+        fontFamily: "MontserratBold",
+        fontSize: 18,
+        marginHorizontal: 27
+    },
+
     recommendationTitle: {
         fontSize: 18,
         fontFamily: "MontserratBold",
         fontWeight: "700",
         color: colours.text,
         flexShrink: 1
+    },
+
+    time: {
+        display: "flex",
+        flexDirection: "row",
+        flex: 1,
+        marginTop: 13,
+        marginBottom: 60
+    },
+
+    timeBtnContainer: {
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    timeBtn: {
+        width: 80,
+        paddingVertical: 10,
+        borderRadius: 35,
+    },
+
+    timeBtnActive: {
+        backgroundColor: "rgba(42,42,42,1)",
+    },
+
+    timeTxt: {
+        fontSize: 13,
+        fontFamily: "MontserratBold",
+        fontWeight: "400",
+        textAlign: "center",
+        color: "rgba(255, 255, 255, 1)",
+    },
+
+    top3Container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+    },
+
+    top2PicContainer: {
+        borderRadius: 47.5,
+        borderWidth: 3.7,
+        borderColor: "#F4F4F4",
+        width: 60,
+        height: 60,
+    },
+
+    top3PicContainer: {
+        borderRadius: 47.5,
+        borderWidth: 3.7,
+        borderColor: "#FF8228",
+        width: 60,
+        height: 60,
+    },
+
+    top1Container: {
+        borderRadius: 47.5,
+        borderWidth: 3.7,
+        borderColor: "rgba(255,202,40,1)",
+        width: 95,
+        height: 95,
+    },
+
+    usernameTxt: {
+        marginTop: 8,
+        fontSize: 17,
+        fontWeight: "400",
+        color: "rgba(255, 255, 255, 1)",
+        textAlign: 'center'
+    },
+
+    userLvlTxt: {
+        marginTop: 3,
+        fontSize: 17,
+        fontWeight: "400",
+        color: "rgba(255, 255, 255, 0.7)",
+        textAlign: 'center'
+    },
+
+    rankContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    rankCircle: {
+        marginTop: -15,
+        borderRadius: 20,
+        backgroundColor: "rgba(244,244,244,1)",
+        borderWidth: 3.7,
+        borderStyle: "solid",
+        borderColor: "rgba(50,34,68,1)",
+        width: 27.5,
+        height: 27.5,
+    },
+
+    rankText: {
+        fontSize: 14,
+        fontWeight: "400",
+        textAlign: "center",
+    },
+
+    crown: {
+        width: 75,
+        height: 75
+    },
+
+    allRankContainer: {
+        flexDirection: 'row',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    rankPart1: {
+        flexGrow: 1,
+    },
+
+    rankPart2: {
+        flexGrow: 1,
+    },
+
+    rankPart3: {
+        flexGrow: 4,
+    },
+
+    rankPart4: {
+        flexGrow: 4
+    },
+
+    allRankTxt: {
+        fontSize: 18,
+    },
+
+    rankPic: {
+        width: 36,
+        height: 36,
+        borderRadius: 36,
     },
 })
