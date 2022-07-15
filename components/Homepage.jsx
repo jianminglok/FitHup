@@ -15,19 +15,8 @@ import MarkedList from '@jsamr/react-native-li';
 import Style from './Style';
 import Card from './Card';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-
+    
 var fullWidth = Dimensions.get('window').width; //full width
-
-/* Mock data for homepage */
-const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-        {
-            data: [20, 45, 28, 80, 99, 43],
-            strokeWidth: 4 // optional
-        }
-    ],
-};
 
 let customFonts = {
     'RobotoMedium': require("../assets/fonts/Roboto-Medium.ttf"),
@@ -44,8 +33,10 @@ export default function Homepage({ navigation }) {
     const [calorieTarget, setCalorieTarget] = useState();
     const [dailyExercise,setDailyExercise] = useState();
     const [weeklyExercise,setWeeklyExercise] = useState();
+    const [weeklyExerciseChart, setWeeklyExerciseChart] = useState([]);
     const [dailyFood, setDailyFood] = useState();
     const [weeklyFood, setWeeklyFood] = useState();
+    const [weeklyFoodChart, setWeeklyFoodChart] = useState([]);
     const [exerciseProgressBar, setExerciseProgressBar] = useState();
     const [foodProgressBar, setFoodProgressBar] = useState();
     const [barChange, setBarChange] = useState(false);
@@ -183,33 +174,39 @@ export default function Homepage({ navigation }) {
                     .eq('id', user.id)
                     
                 if (data) {
+                    let arr = [1,2,3,4,5,6,7];
+                    const dict = {};
+                    for (let i = 0; i < arr.length; i++) {
+                        if (i > 0) {
+                            arr[i] = new Date();
+                            arr[i].setTime(weekBefore.getTime());
+                            arr[i].setDate(weekBefore.getDate() + i);
+                            arr[i] = arr[i].toISOString().slice(0,10)
+                        } 
+                        if (i === 0) {
+                            arr[i] = weekBefore.toISOString().slice(0,10);
+                        }
+                        dict[arr[i]] = 0;                        
+            
+                    }
+                    
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        const date = data[i]['date'];
+                        dict[date] += parseInt(data[i]['caloriesAmount'])
+                    }
+                    
+                    //convert dict to arr
+                    const exerciseChartData = Object.values(dict)
+                    
+                    //get weekly value
+                    let total = 0;
+                    for (let i = 0; i< exerciseChartData.length; i++) {
+                        total += exerciseChartData[i];
+                    }
 
-                    // let dict = {
-                    //     [new Date()] : 0, 
-                    //     [weekBefore.getDate() + 1] : 0,
-                    //     [weekBefore.getDate() + 2] : 0,
-                    //     [weekBefore.getDate() + 3] : 0,
-                    //     [weekBefore.getDate() + 4] : 0,
-                    //     [weekBefore.getDate() + 5] : 0,
-                    //     [weekBefore.getDate() + 6] : 0,
-                    
-                    
-                    // }
-                    // console.log(dict)
-
-                    
-                    // for (let i = 0; i < data.length; i++) {
-                    //     let key = data[i]['date'];
-                    //     if (key in dict) {
-                    //         dict[key] += parseFloat(data[i]['caloriesAmount']);
-                    //     } else {
-                    //         dict[key] = parseFloat(data[i]['caloriesAmount']);
-
-                    //     }
-                    // }
-                    // console.log(dict)
-                    
-                
+                    setWeeklyExerciseChart(exerciseChartData);
+                    setWeeklyExercise(total);
                     
                 } else if (error) {
                     throw error;
@@ -279,16 +276,44 @@ export default function Homepage({ navigation }) {
 
                 const { data, error } = await supabase
                     .from('ActivityLoggerCalorie')
-                    .select(`caloriesAmount`)
+                    .select(`caloriesAmount, date`)
                     .gte('date', weekBefore.toISOString())
                     .lt('date', today.toISOString())
                     .eq('id', user.id)
                     
                 if (data) {
-                    let total = 0;
-                    for (let i = 0; i < data.length; i++) {
-                        total += parseInt(data[i]['caloriesAmount'])
+                    let arr = [1,2,3,4,5,6,7];
+                    const dict = {};
+                    for (let i = 0; i < arr.length; i++) {
+                        if (i > 0) {
+                            arr[i] = new Date();
+                            arr[i].setTime(weekBefore.getTime());
+                            arr[i].setDate(weekBefore.getDate() + i);
+                            arr[i] = arr[i].toISOString().slice(0,10)
+                        } 
+                        if (i === 0) {
+                            arr[i] = weekBefore.toISOString().slice(0,10);
+                        }
+                        dict[arr[i]] = 0;                        
+            
                     }
+                    
+                    
+                    for (let i = 0; i < data.length; i++) {
+                        const date = data[i]['date'];
+                        dict[date] += parseInt(data[i]['caloriesAmount'])
+                    }
+                    
+                    //convert dict to arr
+                    const foodChartData = Object.values(dict)
+                    
+                    //get weekly value
+                    let total = 0;
+                    for (let i = 0; i< foodChartData.length; i++) {
+                        total += foodChartData[i];
+                    }
+
+                    setWeeklyFoodChart(foodChartData);
                     setWeeklyFood(total);
                                     
                 } else if (error) {
@@ -419,7 +444,7 @@ export default function Homepage({ navigation }) {
             supabase.removeSubscription(foodSubscription);
         
         };
-    //}, [user, barChange]); //laggy fix to the progress bar loading 
+    // }, [barChange]); //laggy fix to the progress bar loading, might crash
     }, [user]);
 
     // Display splash screen while font is loading
@@ -432,6 +457,26 @@ export default function Homepage({ navigation }) {
     if (!appIsReady) {
         return null;
     }
+
+    const exerciseData = {
+        labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+        datasets: [
+            {
+                data: weeklyExerciseChart,
+                strokeWidth: 4 // optional
+            }
+        ],
+    };
+    
+    const foodData = {
+        labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+        datasets: [
+            {
+                data: weeklyFoodChart,
+                strokeWidth: 4 // optional
+            }
+        ],
+    };
 
     return (
         <View style={Style.homepageContainer} onLayout={onLayoutRootView}>
@@ -468,7 +513,7 @@ export default function Homepage({ navigation }) {
                             </View>
                             <View style={styles.cardPartitionContainer}>
                                 <LineChart
-                                    data={data}
+                                    data={exerciseData}
                                     width={(fullWidth - 76) / 2 + 16}
                                     height={100}
                                     withVerticalLabels={false}
@@ -519,7 +564,7 @@ export default function Homepage({ navigation }) {
                             </View>
                             <View style={styles.cardPartitionContainer}>
                                 <LineChart
-                                    data={data}
+                                    data={foodData}
                                     width={(fullWidth - 76) / 2 + 16}
                                     height={100}
                                     withVerticalLabels={false}
