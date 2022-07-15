@@ -8,7 +8,6 @@ import { StyleSheet, StatusBar, Image, Text, View, TouchableOpacity, Button, Scr
 import TopBar from './TopBar';
 import { Dimensions } from "react-native";
 import * as Progress from 'react-native-progress';
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import { LineChart } from "react-native-chart-kit";
 import disc from '@jsamr/counter-style/presets/disc';
 import MarkedList from '@jsamr/react-native-li';
@@ -39,7 +38,6 @@ export default function Homepage({ navigation }) {
     const [weeklyFoodChart, setWeeklyFoodChart] = useState([]);
     const [exerciseProgressBar, setExerciseProgressBar] = useState();
     const [foodProgressBar, setFoodProgressBar] = useState();
-    const [barChange, setBarChange] = useState(false);
     
     useEffect(() => {
         mounted.current = true;
@@ -51,9 +49,7 @@ export default function Homepage({ navigation }) {
             } catch (error) {
                 console.warn(error);
             } finally {
-                if (mounted.current != false) {
-                    setAppIsReady(true);
-                }
+
             }
         }
 
@@ -341,22 +337,12 @@ export default function Homepage({ navigation }) {
                 }
     
                 setExerciseProgressBar(dailyExercise / exerciseTarget);
-                // console.log(exerciseTarget);
-                
-
-                // console.log(dailyExercise)
-                // console.log(exerciseProgressBar)
 
             } catch (error) {
                 console.log(error)
             }
             finally {
                 setLoading(false)
-                if (barChange) {
-                    setBarChange(false);
-                } else {
-                    setBarChange(true);
-                }
             }
         }
         
@@ -373,57 +359,44 @@ export default function Homepage({ navigation }) {
                 }
     
                 setFoodProgressBar(dailyFood / calorieTarget);
-                // console.log(exerciseTarget);
-                
-
-                // console.log(dailyExercise)
-                // console.log(exerciseProgressBar)
 
             } catch (error) {
                 console.log(error)
             }
             finally {
                 setLoading(false);
-                if (barChange) {
-                    setBarChange(false);
-                } else {
-                    setBarChange(true);
-                }
+             
             }
         }
 
-    
         prepare();
 
         if (mounted.current != false) {
             
-            getExerciseProgressBarRatio();
-            getFoodProgressBarRatio();
-            getWeeklyExercise();
-            getWeeklyDietaryIntake();
-            
-            // const arr = [
-            //     new Promise((resolve, reject) => {
-            //         resolve(getExerciseTarget());
-                    
-            //     }),
-                
-            //     new Promise((resolve, reject) => {
-            //         resolve(getExercise());
-                                
-            //     }),
-                
-            // ]
-    
-            // Promise.all([arr[0], arr[1]]).then((resp) =>{
-            //     // console.log(resp)
-            //     getExerciseProgressBarRatio();
-            //     // console.log(exerciseTarget)
-            //     console.log(exerciseProgressBar)
+            const arr = [
+                new Promise((resolve, reject) => {
+                    resolve(getExerciseProgressBarRatio());
+                }),
+                new Promise((resolve, reject) => {
+                    resolve(getFoodProgressBarRatio());
+                }),
+                new Promise((resolve, reject) => {
+                    resolve(getWeeklyExercise());
+                }),
+                new Promise((resolve, reject) => {
+                    resolve(getWeeklyDietaryIntake());
+                }),
+        
+            ];
+            Promise.all([arr[0], arr[1]]).then(() =>{
+                setAppIsReady(true);
+            })
 
-            // }).catch((error) => {
-            //     console.log(error);
-            // })
+            // getExerciseProgressBarRatio();
+            // getFoodProgressBarRatio();
+            // getWeeklyExercise();
+            // getWeeklyDietaryIntake();
+            
         }
 
         //Subscribe to real time changes to list of food performed
@@ -442,10 +415,9 @@ export default function Homepage({ navigation }) {
             mounted.current = false; 
             supabase.removeSubscription(exerciseSubscription);
             supabase.removeSubscription(foodSubscription);
-        
+
         };
-    // }, [barChange]); //laggy fix to the progress bar loading, might crash
-    }, [user]);
+    }, [user, appIsReady]);
 
     // Display splash screen while font is loading
     const onLayoutRootView = useCallback(async () => {
