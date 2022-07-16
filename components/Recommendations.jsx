@@ -28,11 +28,9 @@ export default function Recommendations({ navigation }) {
     const [caloriesIntakeAmount, setCaloriesIntakeAmount] = useState('');
     const [recommendedCaloriesIntakeAmount, setRecommendedCaloriesIntakeAmount] = useState('');
     const [caloriesBurntAmount, setCaloriesBurntAmount] = useState('');
-    const [calorieDifference, setCalorieDifference] = useState();
 
     const [exerciseData, setExerciseData] = useState('');
     const [exerciseTotal, setExerciseTotal] = useState();
-    const [exerciseDifference, setExerciseDifference] = useState();
 
     const [weeklyExercise, setWeeklyExercise] = useState();
     const [weeklyFood, setWeeklyFood] = useState();
@@ -117,7 +115,6 @@ export default function Recommendations({ navigation }) {
                             caloriesAmount += data[i].caloriesAmount
                         }
                         setCalorieIntakeTotal(caloriesAmount.toFixed(2));
-                        setCalorieDifference(Math.abs(caloriesIntakeAmount - caloriesAmount).toFixed(2))
                     }
                 } else if (error) {
                     throw error;
@@ -228,7 +225,6 @@ export default function Recommendations({ navigation }) {
                             caloriesOutputAmount += data[i].caloriesAmount
                         }
                         setExerciseTotal(parseFloat(caloriesOutputAmount).toFixed(2));
-                        setExerciseDifference(Math.abs(caloriesBurntAmount - caloriesOutputAmount).toFixed(2))
                     }
                 } else if (error) {
                     throw error;
@@ -372,17 +368,22 @@ export default function Recommendations({ navigation }) {
                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
                             <Text style={[styles.recommendationDetails]}>
                                 {calorieIntakeData.length > 0
-                                    ? "Your current calorie intake amount is " + calorieIntakeTotal + ' cal. You are ' + calorieDifference + ' cal away from your target.'
+                                    ? "Your current calorie intake amount is " + calorieIntakeTotal + ' cal. You are ' + Math.abs(caloriesIntakeAmount - calorieIntakeTotal).toFixed(2) + ' cal away from your target.'
                                     : "You haven't recorded any dietary activity yet today. Please do make good use of our app to note them down."
                                 }
                             </Text>
-                            <Text style={[styles.recommendationDetails]}>
-                                {'You calorie intake target is '
-                                    + Math.round(100 * 100 * Math.abs((caloriesIntakeAmount - recommendedCaloriesIntakeAmount) / ((caloriesIntakeAmount + recommendedCaloriesIntakeAmount) / 2))) / 100 + '%'
-                                    + ((caloriesIntakeAmount - recommendedCaloriesIntakeAmount) > 0 ? 'higher' : ' lower')
-                                    + ' than the recommended target. You may want to set a target closed to the recommended value.'}
-                            </Text>
                         </MarkedList>
+                        {Math.abs(caloriesIntakeAmount - recommendedCaloriesIntakeAmount) > 0
+                            ? <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
+                                <Text style={[styles.recommendationDetails]}>
+                                    {'You calorie intake target is '
+                                        + Math.round(100 * 100 * Math.abs((caloriesIntakeAmount - recommendedCaloriesIntakeAmount) / ((caloriesIntakeAmount + recommendedCaloriesIntakeAmount) / 2))) / 100 + '%'
+                                        + ((caloriesIntakeAmount - recommendedCaloriesIntakeAmount) > 0 ? 'higher' : ' lower')
+                                        + ' than the recommended target. You may want to set a target closed to the recommended value.'}
+                                </Text>
+                            </MarkedList>
+                            : <View></View>
+                        }
                         {(weeklyFood / (caloriesIntakeAmount * 7)) < 0.5 || (weeklyFood / (caloriesIntakeAmount * 7)) > 1.5
                             ? <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
                                 <Text style={[styles.recommendationDetails]}>
@@ -404,7 +405,7 @@ export default function Recommendations({ navigation }) {
                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
                             <Text style={[styles.recommendationDetails]}>
                                 {exerciseData.length > 0
-                                    ? "Your current calorie output amount is " + exerciseTotal + ' cal. You are ' + exerciseDifference + ' cal away from your target.'
+                                    ? "Your current calorie output amount is " + exerciseTotal + ' cal. You are ' + Math.abs(caloriesBurntAmount - exerciseTotal).toFixed(2) + ' cal away from your target.'
                                     : "You haven't recorded any exercise activity yet today. Please do make good use of our app to note them down."
                                 }
                             </Text>
