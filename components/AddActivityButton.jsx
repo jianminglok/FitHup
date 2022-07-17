@@ -28,7 +28,7 @@ export default AddActivityButton = ({ navigation }) => {
   ];
 
   return (
-    <View style={{ marginLeft: 55 }}>
+    <View>
       <FloatingAction
         actions={actions}
         onPressItem={(name) => {
@@ -36,10 +36,11 @@ export default AddActivityButton = ({ navigation }) => {
         }}
         color={colours.button}
         tintColor={colours.button}
-        distanceToEdge={{ vertical: 0, horizontal: 0 }}
+        distanceToEdge= {{vertical: 0, horizontal: -25}}
         buttonSize={60}
         iconHeight={25}
         iconWidth={25}
+
       >
       </FloatingAction>
     </View>

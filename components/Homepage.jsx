@@ -53,9 +53,7 @@ export default function Homepage({ navigation }) {
             } catch (error) {
                 console.warn(error);
             } finally {
-                if (mounted.current != false) {
-                    setAppIsReady(true);
-                }
+                
             }
         }
 
@@ -394,7 +392,7 @@ export default function Homepage({ navigation }) {
 
             ];
 
-            Promise.all([arr[0], arr[1]]).then(() => {
+            Promise.all([arr[0], arr[1], arr[2], arr[3]]).then(() => {
                 setAppIsReady(true);
             })
             // getExerciseProgressBarRatio();
@@ -478,7 +476,7 @@ export default function Homepage({ navigation }) {
                                 <Progress.Bar progress={0} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                                 :
 
-                                // <ProgressBarAnimated width={fullWidth - 76} height={10} borderWidth={0} borderRadius={5} backgroundColorOnComplete="#6CC644" value = {exerciseProgressBar * 500}/>
+                                
                                 <Progress.Bar progress={exerciseProgressBar} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                             }
                         </View>
