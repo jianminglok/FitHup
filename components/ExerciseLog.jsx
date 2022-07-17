@@ -15,7 +15,7 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function Exercise({ navigation }) {
+export default function ExerciseLog({ navigation }) {
     const user = supabase.auth.user();
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);

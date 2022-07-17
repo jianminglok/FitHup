@@ -14,7 +14,7 @@ let customFonts = {
     'MontserratBold': require("../assets/fonts/Montserrat-Bold.ttf"),
 };
 
-export default function Food({ navigation }) {
+export default function FoodLog({ navigation }) {
     const user = supabase.auth.user();
     const [appIsReady, setAppIsReady] = useState(false);
     const mounted = useRef(false);
