@@ -53,7 +53,7 @@ export default function Homepage({ navigation }) {
             } catch (error) {
                 console.warn(error);
             } finally {
-                
+
             }
         }
 
@@ -583,7 +583,7 @@ export default function Homepage({ navigation }) {
                                 ? <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationTitle}>
                                     <View>
                                         <Text style={[styles.recommendationTitle]}>
-                                            General
+                                            Dietary
                                         </Text>
                                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
                                             <Text style={[styles.recommendationDetails]}>
