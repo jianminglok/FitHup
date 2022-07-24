@@ -235,15 +235,15 @@ export default SetupTarget = ({ navigation }) => {
     return (
         <View style={Style.profileContainer} onLayout={onLayoutRootView}>
             <StatusBar />
-            <TopBar navigation={navigation} />
-            <Text style={styles.header}>
+            <TopBar testId="setupTargetTopbar" navigation={navigation} />
+            <Text testId="title" style={styles.header}>
                 Setup Target
             </Text>
 
             <KeyboardAwareScrollView>
                 {/*Target Type Field */}
                 <View>
-                    <Text style={[Style.email, { marginTop: 18 }]}>Type of Target</Text>
+                    <Text testId="targetType" style={[Style.email, { marginTop: 18 }]}>Type of Target</Text>
 
                     <View style={Style.profileDropdownContainer}>
                         <SelectDropdown

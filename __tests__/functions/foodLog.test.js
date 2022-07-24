@@ -11,7 +11,6 @@ async function getUserDietaryIntake(email, password) {
 
         const user = supabase.auth.user();
         
-        
         const { data, error } = await supabase
             .from('ActivityLoggerCalorie')
             .select()
@@ -28,7 +27,6 @@ async function getUserDietaryIntake(email, password) {
     } catch (error) {
         return error.message;
     }
-
 };
 
 test('Reading food log returns User Dietary Intake Data retrieved', () => {
