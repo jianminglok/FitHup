@@ -1,5 +1,5 @@
 import React from 'react';
-import Homepage from '../../components/Homepage'
+import Leaderboard from '../../components/Leaderboard'
 import renderer from 'react-test-renderer';
 import { render, waitFor, act } from '@testing-library/react-native';
 import { supabase } from '../../lib/supabase';
@@ -42,7 +42,7 @@ const mockUser = {
 
 const mockAuthUser = jest.mocked(supabase.auth.user);
 
-describe('Homepage', () => {
+describe('Leaderboard', () => {
   mockAuthUser.mockReturnValue(mockUser);
   const useDispatchSpy = jest.spyOn(redux, 'useDispatch');
   const mockDispatchFn = jest.fn()
@@ -52,49 +52,42 @@ describe('Homepage', () => {
   const mockSelectorFn = jest.fn()
   useSelectorSpy.mockReturnValue(mockSelectorFn);
 
-  const homepage = renderer.create(
-    <Homepage />
+  const recommendations = renderer.create(
+    <Leaderboard />
   ).toJSON;
 
   it('should render successfully', async () => {
     await act(async () => {
-      expect(homepage).toBeDefined();
+      expect(recommendations).toBeDefined();
     })
   });
 
   it('should render correctly', async () => {
     await act(async () => {
-      expect(homepage).toMatchSnapshot();
+      expect(recommendations).toMatchSnapshot();
     })
   });
 
-  const { getByTestId } = render(<Homepage />);
+  const { getByTestId } = render(<Leaderboard />);
 
   it('should have top bar', () => {
     waitFor(() => {
-      const homeTopBar = getByTestId('homeTopBar');
-      expect(homeTopBar).toBeInTheDocument();
+      const leaderboardTopbar = getByTestId('leaderboardTopbar');
+      expect(leaderboardTopbar).toBeInTheDocument();
     })
   });
 
-  it('should have exercises card', () => {
+  it('should have title', () => {
     waitFor(() => {
-      const exCard = getByTestId('exCard');
-      expect(exCard).toBeInTheDocument();
+      const title = getByTestId('title');
+      expect(title).toBeInTheDocument();
     })
   });
 
-  it('should have calories card', () => {
+  it('should have recommendations container', () => {
     waitFor(() => {
-      const calCard = getByTestId('calCard');
-      expect(calCard).toBeInTheDocument();
-    })
-  });
-
-  it('should have recommendations card', () => {
-    waitFor(() => {
-      const recCard = getByTestId('recCard');
-      expect(recCard).toBeInTheDocument();
+      const recommendationContainer = getByTestId('recommendationContainer');
+      expect(recommendationContainer).toBeInTheDocument();
     })
   });
 

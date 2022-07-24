@@ -280,7 +280,7 @@ export default function Leaderboard({ navigation }) {
             var dateString = m.getFullYear() + "/" + (m.getMonth() + 1) + "/" + m.getDate() + " " + m.getHours() + ":" + m.getMinutes() + ":" + m.getSeconds();
 
             const result = await Share.share({
-                message: 'My current ranking on the FitHup leaderboard is ' + userRanking + ' and I currently have ' + userPoints + ' points as of ' + dateString + '! Join me on FitHup today!',
+                message: 'My current ranking on the FitHup leaderboard is ' + userRanking + ' and I currently have ' + userPoints + ' points as of ' + dateString + '! Join me on FitHup today! Download FitHup now at https://drive.google.com/file/d/1C3GvyR-E0zO2RuTqIGUYDVwIWclZjOr9/view?usp=sharing',
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {

@@ -468,15 +468,20 @@ export default function Homepage({ navigation }) {
                             color={colours.orange}
                         />
                         <View style={Style.cardDescriptionContainer}>
-                            <Text style={[Style.cardDescriptionBold]}>{exerciseTarget - dailyExercise} calories</Text>
-                            <Text style={[Style.cardDescription]}>to target</Text>
+                            {exerciseTarget && dailyExercise
+                                ? <View>
+                                    <Text style={[Style.cardDescriptionBold]}>{exerciseTarget - dailyExercise} calories</Text>
+                                    <Text style={[Style.cardDescription]}>to target</Text>
+                                </View>
+                                : <Text style={[Style.cardDescriptionBold]}>Target not set</Text>
+                            }
                         </View>
                         <View style={{ flexDirection: 'column', marginBottom: 15 }}>
                             {isNaN(exerciseProgressBar) ?
                                 <Progress.Bar progress={0} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                                 :
 
-                                
+
                                 <Progress.Bar progress={exerciseProgressBar} height={10} borderWidth={0} borderRadius={5} width={fullWidth - 76} unfilledColor="#ffffff" color="linear-gradient(180deg, rgba(255,77,125,1) 0%, rgba(243,10,73,0) 100%)" />
                             }
                         </View>
@@ -521,8 +526,13 @@ export default function Homepage({ navigation }) {
 
                         />
                         <View style={Style.cardDescriptionContainer}>
-                            <Text style={[Style.cardDescriptionBold]}>{calorieTarget - dailyFood} calories</Text>
-                            <Text style={[Style.cardDescription]}>to target</Text>
+                            {calorieTarget && dailyFood
+                                ? <View>
+                                    <Text style={[Style.cardDescriptionBold]}>{calorieTarget - dailyFood} calories</Text>
+                                    <Text style={[Style.cardDescription]}>to target</Text>
+                                </View>
+                                : <Text style={[Style.cardDescriptionBold]}>Target not set</Text>
+                            }
                         </View>
                         <View style={{ flexDirection: 'column', marginBottom: 15 }}>
                             {isNaN(foodProgressBar) ?
@@ -586,7 +596,7 @@ export default function Homepage({ navigation }) {
                                             Dietary
                                         </Text>
                                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
-                                            <Text style={[styles.recommendationDetails, {marginRight: 50}]}>
+                                            <Text style={[styles.recommendationDetails, { marginRight: 50 }]}>
                                                 {(weeklyFood / (calorieTarget * 7)) < 0.5
                                                     ? "It appears that you haven't been reaching your daily calorie intake target most of the week."
                                                     : (weeklyFood / (calorieTarget * 7)) > 1.5
@@ -679,6 +689,6 @@ const styles = StyleSheet.create({
         fontWeight: "200",
         color: colours.text,
         flexShrink: 1,
-        
+
     },
 })

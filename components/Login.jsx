@@ -37,8 +37,6 @@ export default Login = ({ navigation }) => {
 
   async function signInWithEmail() {
     try {
-      setLoading(true);
-
       const { user, error } = await supabase.auth.signIn({
         email: email,
         password: password,
@@ -51,8 +49,6 @@ export default Login = ({ navigation }) => {
       }
     } catch (error) {
       Alert.alert(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
