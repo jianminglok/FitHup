@@ -586,7 +586,7 @@ export default function Homepage({ navigation }) {
                                             Dietary
                                         </Text>
                                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
-                                            <Text style={[styles.recommendationDetails]}>
+                                            <Text style={[styles.recommendationDetails, {marginRight: 50}]}>
                                                 {(weeklyFood / (calorieTarget * 7)) < 0.5
                                                     ? "It appears that you haven't been reaching your daily calorie intake target most of the week."
                                                     : (weeklyFood / (calorieTarget * 7)) > 1.5
@@ -606,7 +606,7 @@ export default function Homepage({ navigation }) {
                                             Exercise
                                         </Text>
                                         <MarkedList counterRenderer={disc} markerTextStyle={styles.recommendationDetails} >
-                                            <Text style={[styles.recommendationDetails, { marginRight: 19 }]}>
+                                            <Text style={[styles.recommendationDetails, { marginRight: 30 }]}>
                                                 {(weeklyExercise / (exerciseTarget * 7)) < 0.25
                                                     ? "It appears that you haven't been reaching your daily target most of the week. Do consider working harder."
                                                     : (weeklyExercise / (exerciseTarget * 7)) < 0.5
@@ -679,5 +679,6 @@ const styles = StyleSheet.create({
         fontWeight: "200",
         color: colours.text,
         flexShrink: 1,
+        
     },
 })
