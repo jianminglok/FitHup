@@ -23,6 +23,7 @@ import Signup from "./components/Signup";
 import FoodLog from "./components/FoodLog";
 import ExerciseLog from "./components/ExerciseLog";
 import Recommendations from "./components/Recommendations";
+import SetupTarget from "./components/SetupTarget";
 import Style from "./components/Style";
 import { supabase } from "./lib/supabase";
 import "react-native-url-polyfill/auto";
@@ -81,6 +82,28 @@ function ActivityLoggerExerciseDrawer() {
     >
       <Drawer.Screen
         name="ActivityLoggerExerciseDrawer"
+        component={ActivityLoggerExercise}
+        options={{
+          headerShown: false,
+          drawerItemStyle: { height: 0 },
+        }}
+      />
+    </Drawer.Navigator>
+  );
+}
+
+function TargetDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: colours.background,
+        },
+      }}
+    >
+      <Drawer.Screen
+        name="TargetDrawer"
         component={ActivityLoggerExercise}
         options={{
           headerShown: false,
@@ -172,6 +195,14 @@ export default function App({ navigation }) {
             <Stack.Screen
               name="SetupProfile"
               component={SetupProfile}
+              options={{
+                headerShown: false,
+              }}
+            />
+
+            <Stack.Screen
+              name="SetupTarget"
+              component={SetupTarget}
               options={{
                 headerShown: false,
               }}
