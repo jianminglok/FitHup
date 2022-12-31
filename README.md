@@ -87,7 +87,7 @@ meet their targets.
     download the current version of our app and install it on your
     smartphone/emulator before testing it.
 
-2.  To install the **APK,** please visit our Github Releases Page at this [`link`]().
+2.  To install the **APK,** please visit our Github Releases Page at this [`link`](https://github.com/jianminglok/FitHup/releases).
 
 3.  Upon launching the app for the first time, you will be greeted with
     a **launch page** containing both the login and sign up buttons.
