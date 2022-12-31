@@ -3,9 +3,9 @@
 **Proposed Level of Achievement:**
 
 Apollo 11
-  
+
 **Motivation**
-  
+
 People today lead a hectic lifestyle and have no time to take charge of
 their health. This could be due to the inconvenience faced when keeping
 track of their dietary habits and the frequency or intensity of their
@@ -87,8 +87,7 @@ meet their targets.
     download the current version of our app and install it on your
     smartphone/emulator before testing it.
 
-2.  To install the **APK,** please use the link as provided on the next
-    page.
+2.  To install the **APK,** please visit our Github Releases Page at this [`link`]().
 
 3.  Upon launching the app for the first time, you will be greeted with
     a **launch page** containing both the login and sign up buttons.
@@ -146,11 +145,7 @@ meet their targets.
 14. If you would like to **sign out** from the app, just tap the menu
     icon on the **top left** corner of the screen, and tap the **sign
     out** button presented to you in the **drawer**.
-    
-    
-**Prototype (Android APK):**
 
-[https://drive.google.com/file/d/1C3GvyR-E0zO2RuTqIGUYDVwIWclZjOr9/view?usp=sharing](https://drive.google.com/file/d/1C3GvyR-E0zO2RuTqIGUYDVwIWclZjOr9/view?usp=sharing)
 
 **App Wireframe Design:**
 
